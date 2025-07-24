@@ -8,6 +8,8 @@ import TopRightCornerSVG from "../../components/ornament/topRightCornerSVG";
 import RightSVG1 from "../../components/ornament/rightSVG1";
 import { Button } from '@/components/ui/button'; // Import Button jika belum ada
 import type { CoverTipe } from '@/types';
+import { toTitleCase } from '@/utils/toTitleCase';
+
 
 const hexToRgba = (hex: string, alpha: number = 1): string => {
   console.log('hex', hex)
@@ -45,7 +47,7 @@ const CoverSection: React.FC<CoverSectionProps> = ({ theme, data, namaTamu, onOp
 
   console.log('data.namaPanggilanPria', data.namaPanggilanPria)
 
-  const namaTampil = `${data.namaPanggilanPria || data.namaPria} & ${data.namaPanggilanWanita || data.namaWanita}`;
+  const namaTampil = `${toTitleCase(data.namaPanggilanPria || data.namaPria)} & ${toTitleCase(data.namaPanggilanWanita || data.namaWanita)}`;
   const tanggalFormatted = data.tanggal ? format(new Date(data.tanggal), "dd MMMM yyyy", { locale: localeId }) : null;
 
   const getBackgroundStyle = () => {

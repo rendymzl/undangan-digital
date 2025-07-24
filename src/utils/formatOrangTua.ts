@@ -1,3 +1,5 @@
+import { toTitleCase } from "./toTitleCase";
+
 export const formatOrangTua = (
   bapak: string | null,
   ibu: string | null,
@@ -7,8 +9,8 @@ export const formatOrangTua = (
   isPria: boolean
 ): string | null => {
   if (!bapak && !ibu) return null;
-  const bapakTrim = bapak?.trim();
-  const ibuTrim = ibu?.trim();
+  const bapakTrim = toTitleCase(bapak?.trim() ?? '');
+  const ibuTrim = toTitleCase(ibu?.trim() ?? '');
   const anakKeTrim = anakKe?.trim();
   const bapakPrefix = almBapak ? "Alm. Bapak" : "Bapak";
   const ibuPrefix = almIbu ? "Almh. Ibu" : "Ibu";

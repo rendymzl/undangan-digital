@@ -5,6 +5,7 @@ import TopSVG from '../../components/ornament/topSVG';
 import TopRightCornerSVG from '../../components/ornament/topRightCornerSVG';
 import RightSVG1 from '../../components/ornament/rightSVG1';
 import { motion } from 'framer-motion';
+import { toTitleCase } from "@/utils/toTitleCase";
 
 type PenutupSectionProps = {
   theme: Theme;
@@ -95,7 +96,7 @@ const PenutupSection: React.FC<PenutupSectionProps> = ({ theme, data }) => (
           className={`mt-8 text-3xl ${theme.fontTitle}`}
           style={{ color: theme.primaryColor }}
         >
-          {data.namaPria} &amp; {data.namaWanita}
+          {toTitleCase(data.namaPria)} &amp; {toTitleCase(data.namaWanita)}
         </motion.div>
         <motion.div
           initial="hidden"

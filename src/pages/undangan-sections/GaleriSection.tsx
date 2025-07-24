@@ -33,22 +33,27 @@ const GaleriSection: React.FC<GaleriSectionProps> = ({ theme, images }) => (
       >
         Galeri
       </motion.h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
         {images.map((img, i) => (
-          <motion.img
+          <motion.div
             key={i}
-            src={img}
-            alt={`Galeri ${i + 1}`}
-            className="rounded-xl border shadow-lg"
-            style={{ borderColor: theme.secondaryColor }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             variants={variants}
             custom={i + 2}
-          />
+            className="aspect-[3/4] w-full overflow-hidden rounded-xl border shadow-lg"
+            style={{ borderColor: theme.secondaryColor }}
+          >
+            <img
+              src={img}
+              alt={`Galeri ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
         ))}
       </div>
+
     </div>
   </div>
 );

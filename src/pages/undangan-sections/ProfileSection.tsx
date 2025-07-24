@@ -3,6 +3,7 @@ import type { Theme } from '@/types/theme';
 import type { MempelaiData } from '@/types'; // Import tipe data utama
 import { motion } from 'framer-motion';
 import { Instagram } from 'lucide-react';
+import { toTitleCase } from '@/utils/toTitleCase';
 
 // --- Tipe Props yang Sudah Diperbaiki ---
 interface ProfileSectionProps {
@@ -83,8 +84,8 @@ const ProfileCard: React.FC<{
           </div>
         )}
       </div>
-      <h3 className={`text-3xl md:text-4xl ${theme.fontTitle}`} style={{ color: theme.primaryColor }}>{mempelai.nama}</h3>
-      {mempelai.namaPanggilan && <p className="text-md mt-1" style={{ color: theme.foregroundColor }}>({mempelai.namaPanggilan})</p>}
+      <h3 className={`text-3xl md:text-4xl ${theme.fontTitle}`} style={{ color: theme.primaryColor }}>{toTitleCase(mempelai.nama)}</h3>
+      {mempelai.namaPanggilan && <p className="text-md mt-1" style={{ color: theme.foregroundColor }}>({toTitleCase(mempelai.namaPanggilan)})</p>}
 
       {/* Tampilkan string orang tua yang sudah diformat */}
       {ortuString && <p className="mt-2 text-sm md:text-base leading-relaxed" style={{ color: theme.foregroundColor }}>{ortuString}</p>}

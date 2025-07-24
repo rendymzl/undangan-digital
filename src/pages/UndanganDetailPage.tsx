@@ -106,7 +106,7 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
           data={{
             namaPria: mempelaiPria.nama,
             namaWanita: mempelaiWanita.nama,
-            namaPanggilanPria: mempelaiWanita.namaPanggilan,
+            namaPanggilanPria: mempelaiPria.namaPanggilan,
             namaPanggilanWanita: mempelaiWanita.namaPanggilan,
             tanggal: akad.tanggal || resepsi.tanggal,
             // --- TAMBAHKAN PROPERTI BERIKUT ---

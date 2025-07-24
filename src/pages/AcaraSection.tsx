@@ -65,10 +65,10 @@ const AcaraSection: React.FC<AcaraSectionProps> = ({ theme, data, title }) => {
 
     return (
         <section
-            className="relative overflow-hidden py-16 px-4"
+            className="relative overflow-hidden px-4"
             style={{ color: theme.primaryColor, background: theme.backgroundColor }}
         >
-            <div className="flex flex-col justify-center items-center min-h-screen relative z-10">
+            <div className="flex flex-col justify-center items-center h-full relative z-10">
                 <div
                     className="relative max-w-xl w-full mx-auto p-6 md:p-8 rounded-2xl backdrop-blur-sm"
                     style={{ background: `${theme.backgroundColor}cc`, border: `1px solid ${theme.primaryColor}40` }}
@@ -121,25 +121,27 @@ const AcaraSection: React.FC<AcaraSectionProps> = ({ theme, data, title }) => {
                         <p className="text-md leading-relaxed" style={{ color: theme.foregroundColor }}>{data.lokasi}</p>
                     </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                        className="mt-8 flex items-center justify-center"
-                    >
-                        <Button
-                            onClick={handleLocationClick}
-                            // --- TAMBAHKAN STYLE DI SINI ---
-                            style={{
-                                background: theme.primaryColor,
-                                color: theme.backgroundColor
-                            }}
+                    {(data.lokasiUrl || (data.lokasiLat && data.lokasiLng)) && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                            className="mt-8 flex items-center justify-center"
                         >
-                            <MapPin size={16} className="mr-2" />
-                            Lihat Peta Lokasi
-                        </Button>
-                    </motion.div>
+                            <Button
+                                onClick={handleLocationClick}
+                                style={{
+                                    background: theme.primaryColor,
+                                    color: theme.backgroundColor
+                                }}
+                            >
+                                <MapPin size={16} className="mr-2" />
+                                Lihat Peta Lokasi
+                            </Button>
+                        </motion.div>
+                    )}
+
                 </div>
             </div>
         </section>

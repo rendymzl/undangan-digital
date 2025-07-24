@@ -157,6 +157,8 @@ export function invitationToApi(inv: Partial<Invitation>): any {
     lokasi_resepsi_sama_dengan_akad: inv.lokasiResepsiSamaDenganAkad,
     cerita_cinta: inv.ceritaCinta,
     cover_url: inv.coverUrl,
+    cover_tipe: inv.coverTipe,
+    cover_gambar_pilihan: inv.coverGambarPilihan,
     theme_id: inv.themeId,
     galeri_aktif: inv.galeriAktif,
     backsound_url: inv.backsoundUrl,

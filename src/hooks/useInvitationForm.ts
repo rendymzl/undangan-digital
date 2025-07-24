@@ -15,7 +15,7 @@ const initialFormState: InvitationFormData = {
     lokasiResepsiSamaDenganAkad: false,
     ceritaCinta: "",
     coverUrl: null,
-    coverTipe: 'warna', // Default adalah warna
+    coverTipe: 'warna',
     coverGambarPilihan: null,
     coverFile: null,
     themeId: themes[0].id,
