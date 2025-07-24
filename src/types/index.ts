@@ -4,3 +4,4 @@ export * from './amplop';
 export * from './photo';
 export * from './user';
 export * from './theme'; 
+export * from './galery'; 

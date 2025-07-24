@@ -1,4 +1,4 @@
-import type { RSVP, Invitation, AmplopDigital, InvitationPhoto } from '@/types';
+import type { RSVP, Invitation, AmplopDigital, InvitationPhoto, UrutanMempelai, AcaraData, Theme, MempelaiData, GaleriFoto, CustomColors, CoverTipe } from '@/types';
 
 // RSVP
 export function rsvpFromApi(r: any): RSVP {
@@ -28,80 +28,262 @@ export function rsvpToApi(r: RSVP): any {
   return apiObj;
 }
 
-// Invitation
-export function invitationFromApi(inv: any): Invitation {
-  return {
-    // Properti yang sudah ada
-    id: inv.id,
-    userId: inv.user_id,
-    slug: inv.slug,
-    namaPria: inv.nama_pria,
-    namaWanita: inv.nama_wanita,
-    ortuPria: inv.ortu_pria,
-    ortuWanita: inv.ortu_wanita,
-    tanggalAkad: inv.tanggal_akad,
-    waktuAkadMulai: inv.waktu_akad_mulai,
-    waktuAkadSelesai: inv.waktu_akad_selesai,
-    lokasiAkad: inv.lokasi_akad,
-    tanggalResepsi: inv.tanggal_resepsi,
-    waktuResepsiMulai: inv.waktu_resepsi_mulai,
-    waktuResepsiSelesai: inv.waktu_resepsi_selesai,
-    lokasiResepsi: inv.lokasi_resepsi,
-    ceritaCinta: inv.cerita_cinta,
-    coverUrl: inv.cover_url,
-    createdAt: inv.created_at,
-    namaPanggilanPria: inv.nama_panggilan_pria,
-    namaPanggilanWanita: inv.nama_panggilan_wanita,
-    themeId: inv.tema,
-    galeriAktif: inv.galeri_aktif,
+export interface MempelaiFormData extends MempelaiData {
+  fotoFile: File | null;
+}
 
-    // Properti baru ditambahkan
-    lokasiAkadLat: inv.lokasi_akad_lat,
-    lokasiAkadLng: inv.lokasi_akad_lng,
-    lokasiAkadUrl: inv.lokasi_akad_url,
-    lokasiResepsiLat: inv.lokasi_resepsi_lat,
-    lokasiResepsiLng: inv.lokasi_resepsi_lng,
-    lokasiResepsiUrl: inv.lokasi_resepsi_url,
-    backsoundUrl: inv.backsound_url,
-    customColors: inv.custom_colors,
+// Interface utama untuk form, menggunakan struktur bersarang
+export interface InvitationFormData {
+  urutanMempelai: UrutanMempelai;
+  lokasiResepsiSamaDenganAkad: boolean;
+
+  mempelaiPria: MempelaiFormData;
+  mempelaiWanita: MempelaiFormData;
+
+  akad: AcaraData;
+  adaAkad: boolean;
+  resepsi: AcaraData;
+  adaResepsi: boolean;
+
+  // Properti level atas lainnya
+  slug: string;
+  ceritaCinta: string | null;
+  amplopDigital: AmplopDigital[] | [];
+  galeri: GaleriFoto[];
+  coverUrl: string | null;
+  coverTipe: CoverTipe;
+  coverGambarPilihan: string | null;
+  coverFile: File | null;
+  themeId: string;
+  galeriAktif: boolean;
+  backsoundUrl: string | null;
+  backsoundFile: File | null;
+  customColors: CustomColors | null;
+}
+
+/**
+ * Mengubah data dari API (snake_case, datar) menjadi format form (camelCase, bersarang).
+ * Digunakan saat memuat data untuk halaman edit.
+ */
+export function invitationToForm(data: any): InvitationFormData {
+  return {
+    // Properti level atas
+    slug: data.slug || "",
+    urutanMempelai: data.urutan_mempelai || "pria-wanita",
+    lokasiResepsiSamaDenganAkad: data.lokasi_resepsi_sama_dengan_akad || false,
+    ceritaCinta: data.cerita_cinta || null,
+    amplopDigital: (data.amplop_digital || []).map(amplopFromApi),
+    coverUrl: data.cover_url || null,
+    coverTipe: data.cover_tipe || 'upload',
+    coverGambarPilihan: data.cover_gambar_pilihan || null,
+    coverFile: data.cover_file || null,
+    themeId: data.theme_id || "default",
+    galeriAktif: data.galeri_aktif || false,
+    galeri: data.galeri || [],
+    backsoundUrl: data.backsound_url || null,
+    backsoundFile: null,
+    customColors: data.custom_colors || null,
+
+    adaAkad: !!(data.tanggal_akad && data.lokasi_akad),
+    adaResepsi: !!(data.tanggal_resepsi && data.lokasi_resepsi),
+
+    // Objek untuk Mempelai Pria
+    mempelaiPria: {
+      nama: data.nama_pria || "",
+      namaPanggilan: data.nama_panggilan_pria || null,
+      anakKe: data.anak_ke_pria || null,
+      bapak: data.bapak_pria || "",
+      ibu: data.ibu_pria || "",
+      almBapak: data.alm_bapak_pria || false,
+      almIbu: data.alm_ibu_pria || false,
+      instagram: data.instagram_pria || null,
+      foto: data.foto_pria || null,
+      fotoTipe: data.foto_pria_tipe || 'upload',
+      fotoFile: null, // Selalu null saat memuat data awal
+    },
+
+    // Objek untuk Mempelai Wanita
+    mempelaiWanita: {
+      nama: data.nama_wanita || "",
+      namaPanggilan: data.nama_panggilan_wanita || null,
+      anakKe: data.anak_ke_wanita || null,
+      bapak: data.bapak_wanita || "",
+      ibu: data.ibu_wanita || "",
+      almBapak: data.alm_bapak_wanita || false,
+      almIbu: data.alm_ibu_wanita || false,
+      instagram: data.instagram_wanita || null,
+      foto: data.foto_wanita || null,
+      fotoTipe: data.foto_wanita_tipe || 'upload',
+      fotoFile: null,
+    },
+
+    // Objek untuk Akad
+    akad: {
+      tanggal: data.tanggal_akad || null,
+      waktuMulai: data.waktu_akad_mulai || null,
+      waktuSelesai: data.waktu_akad_selesai || null,
+      waktuSampaiSelesai: data.waktu_akad_sampai_selesai || false,
+      lokasi: data.lokasi_akad || null,
+      lokasiLat: data.lokasi_akad_lat || null,
+      lokasiLng: data.lokasi_akad_lng || null,
+      lokasiUrl: data.lokasi_akad_url || null,
+    },
+
+    // Objek untuk Resepsi
+    resepsi: {
+      tanggal: data.tanggal_resepsi || null,
+      waktuMulai: data.waktu_resepsi_mulai || null,
+      waktuSelesai: data.waktu_resepsi_selesai || null,
+      waktuSampaiSelesai: data.waktu_resepsi_sampai_selesai || false,
+      lokasi: data.lokasi_resepsi || null,
+      lokasiLat: data.lokasi_resepsi_lat || null,
+      lokasiLng: data.lokasi_resepsi_lng || null,
+      lokasiUrl: data.lokasi_resepsi_url || null,
+    },
   };
 }
 
+
+/**
+ * Mengubah data dari aplikasi (camelCase, bersarang) menjadi format API (snake_case, datar).
+ * Digunakan sebelum menyimpan data (create atau update).
+ */
 export function invitationToApi(inv: Partial<Invitation>): any {
   return {
-    // Properti yang sudah ada
-    id: inv.id,
+    // Properti level atas
     user_id: inv.userId,
     slug: inv.slug,
-    nama_pria: inv.namaPria,
-    nama_wanita: inv.namaWanita,
-    ortu_pria: inv.ortuPria,
-    ortu_wanita: inv.ortuWanita,
-    tanggal_akad: inv.tanggalAkad,
-    waktu_akad_mulai: inv.waktuAkadMulai,
-    waktu_akad_selesai: inv.waktuAkadSelesai,
-    lokasi_akad: inv.lokasiAkad,
-    tanggal_resepsi: inv.tanggalResepsi,
-    waktu_resepsi_mulai: inv.waktuResepsiMulai,
-    waktu_resepsi_selesai: inv.waktuResepsiSelesai,
-    lokasi_resepsi: inv.lokasiResepsi,
+    urutan_mempelai: inv.urutanMempelai,
+    lokasi_resepsi_sama_dengan_akad: inv.lokasiResepsiSamaDenganAkad,
     cerita_cinta: inv.ceritaCinta,
     cover_url: inv.coverUrl,
-    created_at: inv.createdAt,
-    nama_panggilan_pria: inv.namaPanggilanPria,
-    nama_panggilan_wanita: inv.namaPanggilanWanita,
-    tema: inv.themeId,
+    theme_id: inv.themeId,
     galeri_aktif: inv.galeriAktif,
-
-    // Properti baru ditambahkan
-    lokasi_akad_lat: inv.lokasiAkadLat,
-    lokasi_akad_lng: inv.lokasiAkadLng,
-    lokasi_akad_url: inv.lokasiAkadUrl,
-    lokasi_resepsi_lat: inv.lokasiResepsiLat,
-    lokasi_resepsi_lng: inv.lokasiResepsiLng,
-    lokasi_resepsi_url: inv.lokasiResepsiUrl,
     backsound_url: inv.backsoundUrl,
     custom_colors: inv.customColors,
+    galeri: inv.galeri, // Pastikan galeri dioper
+
+    // Data Mempelai Pria (diambil dari objek bersarang)
+    nama_pria: inv.mempelaiPria?.nama,
+    nama_panggilan_pria: inv.mempelaiPria?.namaPanggilan,
+    anak_ke_pria: inv.mempelaiPria?.anakKe,
+    bapak_pria: inv.mempelaiPria?.bapak,
+    ibu_pria: inv.mempelaiPria?.ibu,
+    alm_bapak_pria: inv.mempelaiPria?.almBapak,
+    alm_ibu_pria: inv.mempelaiPria?.almIbu,
+    instagram_pria: inv.mempelaiPria?.instagram,
+    foto_pria: inv.mempelaiPria?.foto,
+    foto_pria_tipe: inv.mempelaiPria?.fotoTipe,
+
+    // Data Mempelai Wanita
+    nama_wanita: inv.mempelaiWanita?.nama,
+    nama_panggilan_wanita: inv.mempelaiWanita?.namaPanggilan,
+    anak_ke_wanita: inv.mempelaiWanita?.anakKe,
+    bapak_wanita: inv.mempelaiWanita?.bapak,
+    ibu_wanita: inv.mempelaiWanita?.ibu,
+    alm_bapak_wanita: inv.mempelaiWanita?.almBapak,
+    alm_ibu_wanita: inv.mempelaiWanita?.almIbu,
+    instagram_wanita: inv.mempelaiWanita?.instagram,
+    foto_wanita: inv.mempelaiWanita?.foto,
+    foto_wanita_tipe: inv.mempelaiWanita?.fotoTipe,
+
+    // Data Akad
+    tanggal_akad: inv.akad?.tanggal,
+    waktu_akad_mulai: inv.akad?.waktuMulai,
+    waktu_akad_selesai: inv.akad?.waktuSelesai,
+    waktu_akad_sampai_selesai: inv.akad?.waktuSampaiSelesai,
+    lokasi_akad: inv.akad?.lokasi,
+    lokasi_akad_lat: inv.akad?.lokasiLat,
+    lokasi_akad_lng: inv.akad?.lokasiLng,
+    lokasi_akad_url: inv.akad?.lokasiUrl,
+
+    // Data Resepsi
+    tanggal_resepsi: inv.resepsi?.tanggal,
+    waktu_resepsi_mulai: inv.resepsi?.waktuMulai,
+    waktu_resepsi_selesai: inv.resepsi?.waktuSelesai,
+    waktu_resepsi_sampai_selesai: inv.resepsi?.waktuSampaiSelesai,
+    lokasi_resepsi: inv.resepsi?.lokasi,
+    lokasi_resepsi_lat: inv.resepsi?.lokasiLat,
+    lokasi_resepsi_lng: inv.resepsi?.lokasiLng,
+    lokasi_resepsi_url: inv.resepsi?.lokasiUrl,
+  };
+}
+
+/**
+ * Mengubah data dari API (snake_case, datar) menjadi format interface Invitation (camelCase, bersarang).
+ * Digunakan untuk menampilkan data di halaman detail atau dashboard.
+ */
+export function invitationFromApi(data: any): Invitation {
+  return {
+    // Properti level atas
+    id: data.id,
+    userId: data.user_id,
+    slug: data.slug,
+    createdAt: data.created_at,
+    urutanMempelai: data.urutan_mempelai || "pria-wanita",
+    lokasiResepsiSamaDenganAkad: data.lokasi_resepsi_sama_dengan_akad || false,
+    ceritaCinta: data.cerita_cinta || null,
+    coverUrl: data.cover_url || null,
+    coverTipe: data.cover_tipe || 'upload',
+    coverGambarPilihan: data.cover_gambar_pilihan || null,
+    themeId: data.theme_id || "default",
+    galeriAktif: data.galeri_aktif || false,
+    backsoundUrl: data.backsound_url || null,
+    customColors: data.custom_colors || null,
+    galeri: (data.galeri || []).map(photoFromApi),
+    amplopDigital: (data.amplop_digital || []).map(amplopFromApi),
+
+    // Objek untuk Mempelai Pria
+    mempelaiPria: {
+      nama: data.nama_pria || "",
+      namaPanggilan: data.nama_panggilan_pria || null,
+      anakKe: data.anak_ke_pria || null,
+      bapak: data.bapak_pria || "",
+      ibu: data.ibu_pria || "",
+      almBapak: data.alm_bapak_pria || false,
+      almIbu: data.alm_ibu_pria || false,
+      instagram: data.instagram_pria || null,
+      foto: data.foto_pria || null,
+      fotoTipe: data.foto_pria_tipe || 'upload',
+    },
+
+    // Objek untuk Mempelai Wanita
+    mempelaiWanita: {
+      nama: data.nama_wanita || "",
+      namaPanggilan: data.nama_panggilan_wanita || null,
+      anakKe: data.anak_ke_wanita || null,
+      bapak: data.bapak_wanita || "",
+      ibu: data.ibu_wanita || "",
+      almBapak: data.alm_bapak_wanita || false,
+      almIbu: data.alm_ibu_wanita || false,
+      instagram: data.instagram_wanita || null,
+      foto: data.foto_wanita || null,
+      fotoTipe: data.foto_wanita_tipe || 'upload',
+    },
+
+    // Objek untuk Akad
+    akad: {
+      tanggal: data.tanggal_akad || null,
+      waktuMulai: data.waktu_akad_mulai || null,
+      waktuSelesai: data.waktu_akad_selesai || null,
+      waktuSampaiSelesai: data.waktu_akad_sampai_selesai || false,
+      lokasi: data.lokasi_akad || null,
+      lokasiLat: data.lokasi_akad_lat || null,
+      lokasiLng: data.lokasi_akad_lng || null,
+      lokasiUrl: data.lokasi_akad_url || null,
+    },
+
+    // Objek untuk Resepsi
+    resepsi: {
+      tanggal: data.tanggal_resepsi || null,
+      waktuMulai: data.waktu_resepsi_mulai || null,
+      waktuSelesai: data.waktu_resepsi_selesai || null,
+      waktuSampaiSelesai: data.waktu_resepsi_sampai_selesai || false,
+      lokasi: data.lokasi_resepsi || null,
+      lokasiLat: data.lokasi_resepsi_lat || null,
+      lokasiLng: data.lokasi_resepsi_lng || null,
+      lokasiUrl: data.lokasi_resepsi_url || null,
+    },
   };
 }
 
@@ -121,7 +303,6 @@ export function amplopFromApi(a: any): AmplopDigital {
 
 export function amplopToApi(a: AmplopDigital): any {
   return {
-    id: a.id,
     invitation_id: a.invitationId,
     bank: a.bank,
     atas_nama: a.atasNama,

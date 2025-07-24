@@ -1,5 +1,5 @@
 export interface RSVP {
-  id: string;
+  id?: string;
   invitationId: string;
   guestName: string;
   attendanceStatus: 'attending' | 'not_attending' | 'pending';

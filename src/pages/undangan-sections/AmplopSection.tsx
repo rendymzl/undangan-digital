@@ -1,15 +1,16 @@
 import React from "react";
 import type { Theme } from "../../types/theme";
 import { motion } from 'framer-motion';
+import type { AmplopDigital } from "@/types";
 
-type AmplopSectionProps = {
+interface AmplopSectionProps {
   theme: Theme;
   data: {
     namaPria: string;
     namaWanita: string;
-    rekening: { bank: string; accountNumber: string; accountName: string }[];
+    rekening: AmplopDigital[]; 
   };
-};
+}
 
 const GiftCard: React.FC<{ theme: Theme; bank: string; accountNumber: string; accountName: string }> = ({ theme, bank, accountNumber, accountName }) => {
   const copyToClipboard = (text: string) => {
@@ -78,7 +79,7 @@ const AmplopSection: React.FC<AmplopSectionProps> = ({ theme, data }) => {
               custom={i + 3}
               className="w-full flex justify-center"
             >
-              <GiftCard theme={theme} bank={rek.bank} accountNumber={rek.accountNumber} accountName={rek.accountName} />
+              <GiftCard theme={theme} bank={rek.bank} accountNumber={rek.nomor} accountName={rek.atasNama} />
             </motion.div>
           ))}
         </div>

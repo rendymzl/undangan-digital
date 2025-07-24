@@ -3,76 +3,56 @@ import type { Invitation } from '@/types';
 import type { RSVP } from '@/types';
 import { invitationToApi } from '@/utils/caseTransform';
 
-export async function createInvitation(data: Invitation) {
-  // Jangan sertakan field id saat insert, biarkan Supabase/autoincrement yang generate
-  const apiData = invitationToApi(data);
-  delete apiData.id;
-  return await supabase.from('invitations').insert([apiData]);
+export function createInvitation(apiData: any) {
+  // 'apiData' adalah objek yang Anda tampilkan di console.log
+  return supabase
+    .from('invitations')
+    .insert([apiData]) // <-- Pastikan data dibungkus dalam array
+    .select('id')      // <-- Penting untuk mendapatkan ID kembali
+    .single();         // <-- Kembalikan satu baris hasil
 }
 
 export async function getInvitationsByUser(userId: string) {
   return await supabase.from('invitations').select('*').eq('user_id', userId).order('created_at', { ascending: false });
 }
 
-export const getInvitationBySlug = async (slug: string) => {
-  // Ambil data undangan
-  const { data: invitation, error: invitationError } = await supabase
+export async function getInvitationBySlug(slug: string) {
+  // Gunakan satu query untuk mengambil undangan beserta semua data terkaitnya
+  const response = await supabase
     .from('invitations')
-    .select('*')
+    .select(`
+      *,
+      invitation_photos(*),
+      amplop_digital(*),
+      love_story(*)
+    `)
     .eq('slug', slug)
     .single();
 
-  if (invitationError) {
-    throw invitationError;
-  }
+  // Langsung kembalikan hasil dari Supabase, yang sudah dalam format { data, error }
+  return response;
+}
 
-  // Ambil foto-foto
-  const { data: photos, error: photosError } = await supabase
-    .from('invitation_photos')
+// Fungsi untuk mengambil satu undangan berdasarkan ID
+export async function getInvitationById(id: string) {
+  return supabase
+    .from('invitations')
     .select('*')
-    .eq('invitation_id', invitation.id)
-    .order('created_at', { ascending: true });
+    .eq('id', id)
+    .single(); // .single() untuk mendapatkan satu baris data
+}
 
-  if (photosError) {
-    console.error('Error fetching photos:', photosError);
-  }
+// Fungsi untuk memperbarui undangan
+export async function updateInvitation(id: string, updates: Partial<Invitation>) {
+  // Pastikan tidak mengupdate slug atau userId secara tidak sengaja
+  const { slug, userId, ...updateData } = updates;
+  const apiData = invitationToApi(updateData);
 
-  // Ambil amplop digital
-  const { data: rekening, error: rekeningError } = await supabase
-    .from('amplop_digital')
-    .select('*')
-    .eq('invitation_id', invitation.id)
-    .order('created_at', { ascending: true });
-
-  if (rekeningError) {
-    console.error('Error fetching rekening:', rekeningError);
-  }
-
-  // Ambil love story
-  const { data: loveStory, error: loveStoryError } = await supabase
-    .from('love_story')
-    .select('*')
-    .eq('invitation_id', invitation.id)
-    .order('created_at', { ascending: true });
-
-  if (loveStoryError) {
-    console.error('Error fetching love story:', loveStoryError);
-  }
-
-  // Gabungkan semua data
-  return {
-    data: {
-      ...invitation,
-      galeri: photos?.map(p => p.url) || [],
-      rekening: rekening?.map(r => ({
-        bank: r.bank,
-        accountName: r.atas_nama,
-        accountNumber: r.nomor
-      })) || [],
-      cerita: loveStory?.map(s => `${s.tahun} - ${s.judul}\n${s.deskripsi}`).join('\n\n') || ''
-    }
-  };
-};
+  return supabase
+    .from('invitations')
+    .update(apiData) // Gunakan data yang sudah di-transform ke snake_case jika perlu
+    .eq('id', id);
+}
 
 export async function createUcapan(data: RSVP) {
   return await supabase.from('rsvp').insert([data]);

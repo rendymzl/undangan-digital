@@ -28,10 +28,11 @@ function App() {
             <Route path="/dashboard" element={<Layout />}>
               <Route index element={<DashboardPage />} />
               <Route path="buat-undangan" element={<BuatUndanganPage />} />
+              <Route path="edit-undangan/:id" element={<BuatUndanganPage />} />
               <Route path="amplop-digital/:invitationId" element={<AmplopDigitalManagePage />} />
             </Route>
           </Route>
-          
+
           <Route path="/preview/draft" element={<PreviewUndangan />} />
           <Route path="/:slug" element={<UndanganDetailPage />} />
           <Route path="/:slug/galeri" element={<GaleriUndanganPage />} />

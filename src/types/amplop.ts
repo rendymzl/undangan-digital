@@ -1,5 +1,5 @@
 export interface AmplopDigital {
-  id: string;
+  id?: string;
   invitationId?: string;
   bank: string;
   atasNama: string;

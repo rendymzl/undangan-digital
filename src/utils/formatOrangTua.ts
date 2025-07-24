@@ -1,17 +1,32 @@
-export function formatOrangTua(
-  bapak: string,
-  ibu: string,
+export const formatOrangTua = (
+  bapak: string | null,
+  ibu: string | null,
   almBapak: boolean,
   almIbu: boolean,
-  anakKe: string,
+  anakKe: string | null,
   isPria: boolean
-): string {
-  if (!bapak && !ibu) return "";
-  const anakKeStr = anakKe ? `, anak ke-${anakKe}` : "";
-  const almBapakStr = almBapak ? "Alm. " : "";
-  const almIbuStr = almIbu ? "Almh. " : "";
-  const ortuStr = isPria
-    ? `Putra dari ${almBapakStr}${bapak} & ${almIbuStr}${ibu}${anakKeStr}`
-    : `Putri dari ${almBapakStr}${bapak} & ${almIbuStr}${ibu}${anakKeStr}`;
-  return ortuStr;
-} 
+): string | null => {
+  if (!bapak && !ibu) return null;
+  const bapakTrim = bapak?.trim();
+  const ibuTrim = ibu?.trim();
+  const anakKeTrim = anakKe?.trim();
+  const bapakPrefix = almBapak ? "Alm. Bapak" : "Bapak";
+  const ibuPrefix = almIbu ? "Almh. Ibu" : "Ibu";
+  const anakPrefix = isPria ? "Putra" : "Putri";
+
+  let orangTuaText = "";
+  if (bapakTrim && ibuTrim) {
+    orangTuaText = `${bapakPrefix} ${bapakTrim} & ${ibuPrefix} ${ibuTrim}`;
+  } else if (bapakTrim) {
+    orangTuaText = `${bapakPrefix} ${bapakTrim}`;
+  } else if (ibuTrim) {
+    orangTuaText = `${ibuPrefix} ${ibuTrim}`;
+  } else {
+    return null;
+  }
+
+  if (anakKeTrim) {
+    return `${anakPrefix} ke-${anakKeTrim} dari ${orangTuaText}`;
+  }
+  return `${anakPrefix} dari ${orangTuaText}`;
+};
