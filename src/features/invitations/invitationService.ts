@@ -35,22 +35,27 @@ export async function getInvitationBySlug(slug: string) {
 
 // Fungsi untuk mengambil satu undangan berdasarkan ID
 export async function getInvitationById(id: string) {
-  return supabase
+  // --- PERBAIKI QUERY DI SINI ---
+  const response = await supabase
     .from('invitations')
-    .select('*')
+    // Ambil semua data dari invitations DAN semua data terkait dari tabel lain
+    .select(`
+      *,
+      amplop_digital(*)
+    `)
     .eq('id', id)
-    .single(); // .single() untuk mendapatkan satu baris data
+    .single();
+
+  return response;
 }
 
 // Fungsi untuk memperbarui undangan
-export async function updateInvitation(id: string, updates: Partial<Invitation>) {
-  // Pastikan tidak mengupdate slug atau userId secara tidak sengaja
-  const { slug, userId, ...updateData } = updates;
-  const apiData = invitationToApi(updateData);
-
+export async function updateInvitation(id: string, apiData: any) {
+  // Tidak ada lagi transformasi di sini.
+  // Fungsi ini hanya bertugas mengirim data ke Supabase.
   return supabase
     .from('invitations')
-    .update(apiData) // Gunakan data yang sudah di-transform ke snake_case jika perlu
+    .update(apiData)
     .eq('id', id);
 }
 

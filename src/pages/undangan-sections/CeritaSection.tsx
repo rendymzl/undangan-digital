@@ -56,7 +56,7 @@ const CeritaSection: React.FC<CeritaSectionProps> = ({ theme, data }) => (
         style={{ borderColor: `${theme.secondaryColor}80` }}
       >
         <span className={`absolute -top-2 -left-3 text-5xl opacity-20`} style={{ color: theme.primaryColor, fontFamily: theme.fontTitle }}>&quot;</span>
-        <p className="text-base md:text-lg leading-relaxed italic text-center" style={{ color: theme.primaryColor }}>{data.cerita}</p>
+        <p className="text-base md:text-lg leading-relaxed italic text-center px-8" style={{ color: theme.primaryColor }}>{data.cerita}</p>
         <span className={`absolute -bottom-4 -right-3 text-5xl opacity-20`} style={{ color: theme.primaryColor, fontFamily: theme.fontTitle }}>&quot;</span>
       </motion.div>
     </div>

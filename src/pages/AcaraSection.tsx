@@ -65,7 +65,7 @@ const AcaraSection: React.FC<AcaraSectionProps> = ({ theme, data, title }) => {
 
     return (
         <section
-            className="relative overflow-hidden px-4"
+            className="relative overflow-hidden px-4 py-6"
             style={{ color: theme.primaryColor, background: theme.backgroundColor }}
         >
             <div className="flex flex-col justify-center items-center h-full relative z-10">

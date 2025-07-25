@@ -67,7 +67,7 @@ export interface Invitation {
 
 // Tipe untuk tabel love_story
 export interface LoveStory {
-  id: string;
+  id?: string;
   invitationId: string;
   tahun?: string;
   judul?: string;

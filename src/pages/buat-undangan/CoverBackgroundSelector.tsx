@@ -41,7 +41,7 @@ export const CoverBackgroundSelector: React.FC<Props> = ({ form, updateForm }) =
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <ImageIcon size={20} /> Latar Belakang Sampul
+                    <ImageIcon size={20} /> Background Cover Undangan
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -73,8 +73,8 @@ export const CoverBackgroundSelector: React.FC<Props> = ({ form, updateForm }) =
                     <TabsContent value="upload" className="pt-4 flex justify-center">
                         <div className="w-48">
                             <Label htmlFor="cover-upload" className="w-full aspect-[9/16] rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden">
-                                {form.coverFile ? (
-                                    <img src={form.coverUrl!} alt="Preview" className="w-full h-full object-cover" />
+                                {form.coverUrl && form.coverTipe === 'upload' ? (
+                                    <img src={form.coverUrl} alt="Preview" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="text-center text-gray-500">
                                         <Camera size={24} className="mx-auto" />

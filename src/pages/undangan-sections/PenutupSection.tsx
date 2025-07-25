@@ -6,12 +6,14 @@ import TopRightCornerSVG from '../../components/ornament/topRightCornerSVG';
 import RightSVG1 from '../../components/ornament/rightSVG1';
 import { motion } from 'framer-motion';
 import { toTitleCase } from "@/utils/toTitleCase";
+import type { UrutanMempelai } from "@/types";
 
 type PenutupSectionProps = {
   theme: Theme;
   data: {
     namaPria: string;
     namaWanita: string;
+    urutanMempelai?: UrutanMempelai | null;
   };
 };
 
@@ -96,7 +98,10 @@ const PenutupSection: React.FC<PenutupSectionProps> = ({ theme, data }) => (
           className={`mt-8 text-3xl ${theme.fontTitle}`}
           style={{ color: theme.primaryColor }}
         >
-          {toTitleCase(data.namaPria)} &amp; {toTitleCase(data.namaWanita)}
+          {data.urutanMempelai === 'wanita-pria'
+            ? `${toTitleCase(data.namaWanita)} & ${toTitleCase(data.namaPria)}`
+            : `${toTitleCase(data.namaPria)} & ${toTitleCase(data.namaWanita)}`
+          }
         </motion.div>
         <motion.div
           initial="hidden"

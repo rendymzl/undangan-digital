@@ -7,7 +7,7 @@ import { id as localeId } from 'date-fns/locale';
 import TopRightCornerSVG from "../../components/ornament/topRightCornerSVG";
 import RightSVG1 from "../../components/ornament/rightSVG1";
 import { Button } from '@/components/ui/button'; // Import Button jika belum ada
-import type { CoverTipe } from '@/types';
+import type { CoverTipe, UrutanMempelai } from '@/types';
 import { toTitleCase } from '@/utils/toTitleCase';
 
 
@@ -35,6 +35,7 @@ type CoverSectionProps = {
     coverTipe?: CoverTipe;
     coverUrl?: string | null;
     coverGambarPilihan?: string | null;
+    urutanMempelai?: UrutanMempelai | null;
   };
   namaTamu: string;
   onOpen: () => void;
@@ -47,7 +48,7 @@ const CoverSection: React.FC<CoverSectionProps> = ({ theme, data, namaTamu, onOp
 
   console.log('data.namaPanggilanPria', data.namaPanggilanPria)
 
-  const namaTampil = `${toTitleCase(data.namaPanggilanPria || data.namaPria)} & ${toTitleCase(data.namaPanggilanWanita || data.namaWanita)}`;
+  const namaTampil = data.urutanMempelai == 'wanita-pria' ? `${toTitleCase(data.namaPanggilanWanita || data.namaWanita)} & ${toTitleCase(data.namaPanggilanPria || data.namaPria)}` : `${toTitleCase(data.namaPanggilanPria || data.namaPria)} & ${toTitleCase(data.namaPanggilanWanita || data.namaWanita)}`;
   const tanggalFormatted = data.tanggal ? format(new Date(data.tanggal), "dd MMMM yyyy", { locale: localeId }) : null;
 
   const getBackgroundStyle = () => {

@@ -1,4 +1,3 @@
-import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import React from "react";
 
@@ -9,9 +8,21 @@ type Props = {
 
 const CeritaCintaStep: React.FC<Props> = ({ form, updateForm }) => (
   <div className="space-y-4">
-    <Textarea value={form.cerita_cinta} onChange={e => updateForm("cerita_cinta", e.target.value)} placeholder="Tulis cerita cinta kalian..." rows={8} />
-    <Input value={form.cover_url} onChange={e => updateForm("cover_url", e.target.value)} placeholder="URL Cover (Opsional)" />
+    <label className="block font-medium text-sm mb-1" htmlFor="cerita-cinta">
+      Cerita Cinta <span className="text-muted-foreground">(opsional)</span>
+    </label>
+    <Textarea
+      id="cerita-cinta"
+      value={form.ceritaCinta ?? ""}
+      onChange={e => updateForm("ceritaCinta", e.target.value)}
+      placeholder="Tulis kisah cinta kalian di sini, misal: bagaimana bertemu, perjalanan cinta, atau momen spesial lainnya..."
+      rows={8}
+      className="resize-none"
+    />
+    <p className="text-xs text-muted-foreground">
+      Cerita ini akan ditampilkan di undangan digital. Kosongkan jika tidak ingin menampilkan cerita.
+    </p>
   </div>
 );
 
-export default CeritaCintaStep; 
+export default CeritaCintaStep;

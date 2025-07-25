@@ -28,7 +28,6 @@ const initialFormState: InvitationFormData = {
     galeri: [],
     backsoundFile: null,
 
-
     // Objek untuk Mempelai Pria
     mempelaiPria: {
         nama: "",
@@ -160,7 +159,6 @@ export function useInvitationForm() {
         setSubmitError("");
 
         try {
-            // --- 1. PROSES UPLOAD SEMUA FILE BARU ---
             const uploadFile = async (file: File, bucket: 'photos' | 'backsound') => {
                 const fileName = `${user!.id}/${bucket}-${Date.now()}-${file.name}`;
                 const { data, error } = await supabase.storage.from(bucket).upload(fileName, file);
@@ -207,29 +205,47 @@ export function useInvitationForm() {
             const { fotoFile: wFile, ...mempelaiWanitaData } = form.mempelaiWanita;
 
             let finalCoverUrl = form.coverUrl;
-            if (form.coverTipe === 'upload' && form.coverFile) {
-                finalCoverUrl = await uploadFile(form.coverFile, 'photos'); // Asumsi bucket 'photos'
+            if (form.coverTipe === 'upload') {
+                // HANYA upload jika ada file baru yang dipilih
+                if (form.coverFile) {
+                    finalCoverUrl = await uploadFile(form.coverFile, 'photos');
+                }
+                // Jika tidak ada file baru, `finalCoverUrl` akan tetap berisi URL lama (tidak berubah)
             } else if (form.coverTipe === 'gambar') {
                 finalCoverUrl = form.coverGambarPilihan;
-            } else {
+            } else { // 'warna'
                 finalCoverUrl = null;
             }
 
             const invitationDataForApi = {
                 ...form,
                 userId: user!.id,
-                coverUrl: finalCoverUrl,
                 backsoundUrl: backsoundUrlResult,
                 galeri: uploadedGaleri,
+                coverUrl: finalCoverUrl,
                 mempelaiPria: { ...mempelaiPriaData, foto: form.mempelaiPria.fotoTipe === 'tanpa_foto' ? null : fotoPriaUrl },
                 mempelaiWanita: { ...mempelaiWanitaData, foto: form.mempelaiWanita.fotoTipe === 'tanpa_foto' ? null : fotoWanitaUrl },
             };
 
             const apiData = invitationToApi(invitationDataForApi);
+            console.log("apiData:", apiData);
 
             let savedInvitationId = invitationId;
             if (isEditMode) {
-                await updateInvitation(invitationId!, apiData);
+                if (!invitationId) {
+                    throw new Error("ID Undangan tidak ditemukan untuk proses edit.");
+                }
+
+                // --- PERBAIKAN DI SINI ---
+                // Hapus hanya kolom yang tidak boleh berubah, biarkan 'slug' tetap ada
+                const { user_id, created_at, ...updateData } = apiData;
+
+                // Kirim data update yang sekarang sudah menyertakan 'slug'
+                const { error } = await updateInvitation(invitationId, updateData);
+
+                if (error) throw error;
+                toast.success("Undangan berhasil diperbarui!");
+
             } else {
                 const { data: newInvitation, error } = await createInvitation(apiData);
 
@@ -245,21 +261,52 @@ export function useInvitationForm() {
             }
 
             // --- 3. SIMPAN DATA AMPLOP DIGITAL SECARA TERPISAH ---
-            if (form.amplopDigital && form.amplopDigital.length > 0) {
+            // Perbaikan update amplop pada mode edit invitation
+            if (form.amplopDigital) {
+                // 1. Ambil data amplop lama dari database jika edit mode
+                let oldAmplopIds: string[] = [];
+                if (isEditMode && savedInvitationId) {
+                    const { data: oldAmplop, error: oldAmplopError } = await supabase
+                        .from('amplop_digital')
+                        .select('id')
+                        .eq('invitation_id', savedInvitationId);
+
+                    if (oldAmplopError) {
+                        console.error("Gagal mengambil data amplop lama:", oldAmplopError);
+                    } else if (oldAmplop) {
+                        oldAmplopIds = oldAmplop.map((item: any) => item.id);
+                    }
+                }
+
+                // 2. Siapkan payload upsert
                 const amplopPayload = form.amplopDigital.map(item => {
                     const apiItem = amplopToApi(item);
                     const finalItem: any = { ...apiItem, invitation_id: savedInvitationId };
 
-                    // Hanya sertakan ID jika item tersebut sudah ada (untuk proses UPDATE)
-                    // Jika item baru, ID tidak disertakan agar database bisa membuatnya.
                     if (item.id) {
                         finalItem.id = item.id;
                     }
                     return finalItem;
                 });
 
-                const { error: amplopError } = await supabase.from('amplop_digital').upsert(amplopPayload);
-                if (amplopError) throw amplopError;
+                // 3. Upsert data amplop
+                if (amplopPayload.length > 0) {
+                    const { error: amplopError } = await supabase.from('amplop_digital').upsert(amplopPayload, { onConflict: 'id' });
+                    if (amplopError) throw amplopError;
+                }
+
+                // 4. Hapus amplop yang sudah tidak ada di form (hanya pada edit mode)
+                if (isEditMode && oldAmplopIds.length > 0) {
+                    const currentIds = form.amplopDigital.filter(a => a.id).map(a => a.id);
+                    const toDeleteIds = oldAmplopIds.filter(id => !currentIds.includes(id));
+                    if (toDeleteIds.length > 0) {
+                        const { error: deleteError } = await supabase
+                            .from('amplop_digital')
+                            .delete()
+                            .in('id', toDeleteIds);
+                        if (deleteError) throw deleteError;
+                    }
+                }
             }
 
             toast.success(isEditMode ? "Undangan berhasil diperbarui!" : "Undangan berhasil dibuat!");

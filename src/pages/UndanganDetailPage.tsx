@@ -113,6 +113,7 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
             coverTipe: invitation.coverTipe,
             coverUrl: invitation.coverUrl,
             coverGambarPilihan: invitation.coverGambarPilihan,
+            urutanMempelai: invitation.urutanMempelai,
           }}
           namaTamu={guestName}
           onOpen={handleOpenUndangan}
@@ -176,6 +177,7 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
               data={{
                 namaPria: mempelaiPria.namaPanggilan || mempelaiPria.nama.split(' ')[0],
                 namaWanita: mempelaiWanita.namaPanggilan || mempelaiWanita.nama.split(' ')[0],
+                urutanMempelai: invitation.urutanMempelai,
               }}
             />
           </>

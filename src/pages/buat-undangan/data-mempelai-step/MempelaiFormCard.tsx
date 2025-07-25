@@ -136,7 +136,9 @@ export const MempelaiFormCard: React.FC<MempelaiFormProps> = ({ data, updateForm
                             <div className="relative w-32 h-32">
                                 <Input id={data.nama} type="file" accept="image/*" className="hidden" onChange={handleFotoChange} />
                                 <label htmlFor={data.nama} className="w-32 h-32 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed shadow-sm group bg-gray-50 hover:bg-gray-100">
-                                    {data.foto && data.foto.startsWith('blob:') ? (
+
+                                    {/* --- PERBAIKAN UTAMA DI SINI --- */}
+                                    {data.foto ? ( // Cukup periksa apakah 'data.foto' ada nilainya
                                         <img src={data.foto} alt="Preview" className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="text-center">
@@ -145,7 +147,8 @@ export const MempelaiFormCard: React.FC<MempelaiFormProps> = ({ data, updateForm
                                         </div>
                                     )}
                                 </label>
-                                {data.foto && data.foto.startsWith('blob:') && (
+
+                                {data.foto && ( // Tombol hapus muncul jika ada foto
                                     <Button onClick={handleRemoveFoto} variant="destructive" size="icon" className="absolute -top-1 -right-1 w-6 h-6 rounded-full z-10">
                                         <X className="w-4 h-4" />
                                     </Button>
