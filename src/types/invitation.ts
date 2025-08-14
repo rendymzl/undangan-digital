@@ -1,5 +1,7 @@
 import type { AmplopDigital } from "./amplop";
 import type { GaleriFoto } from "./galery";
+import type { PaymentProof } from "./payment";
+import type { RSVP } from "./rsvp";
 
 export type UrutanMempelai = 'pria-wanita' | 'wanita-pria';
 export type FotoTipe = 'upload' | 'avatar' | 'tanpa_foto';
@@ -7,7 +9,9 @@ export type CoverTipe = 'warna' | 'gambar' | 'upload';
 
 export interface CustomColors {
   primary: string;
+  primaryForeground: string; // <-- Warna teks untuk di atas 'primary'
   secondary: string;
+  secondaryForeground: string; // <-- Warna teks untuk di atas 'secondary'
   background: string;
   foreground: string;
 }
@@ -44,7 +48,10 @@ export interface Invitation {
   userId: string;
   slug: string;
   createdAt: string;
+  expiredAt: string;
   urutanMempelai: UrutanMempelai;
+  payment_proofs: PaymentProof[];
+  rsvp: RSVP[];
 
   mempelaiPria: MempelaiData;
   mempelaiWanita: MempelaiData;
@@ -59,6 +66,8 @@ export interface Invitation {
   coverTipe: CoverTipe;
   coverGambarPilihan: string | null;
   themeId: string;
+  fontTitle: string;
+  fontText: string;
   galeriAktif: boolean;
   backsoundUrl: string | null;
   customColors: CustomColors | null;

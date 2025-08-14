@@ -42,7 +42,7 @@ export async function updateAmplop(id: string, amplop: Partial<AmplopDigital>): 
   return data;
 }
 
-export async function deleteAmplop(id: string): Promise<void> {
+export async function deleteAmplopById(id: string): Promise<void> {
   const { error } = await supabase
     .from('amplop_digital')
     .delete()

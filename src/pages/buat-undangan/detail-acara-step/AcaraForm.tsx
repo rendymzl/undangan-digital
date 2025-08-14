@@ -9,16 +9,15 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { id as localeId } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
-import type { AcaraData } from '@/types';
 import { LocationInput } from './LocationInput';
+import type { AcaraData } from '@/types';
 
-// Definisikan tipe untuk Props
 type AcaraFormProps = {
     acaraData: AcaraData;
     path: string;
     updateForm: (path: string, value: any) => void;
-    disabled?: boolean;
-    themeColor?: string; // Untuk warna checkbox (misal: 'green' atau 'purple')
+    disabled?: boolean; // Prop ini sekarang hanya untuk lokasi
+    themeColor?: string;
 };
 
 export const AcaraForm: React.FC<AcaraFormProps> = ({
@@ -28,6 +27,14 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
     disabled = false,
     themeColor = 'gray'
 }) => {
+    const handleSampaiSelesaiChange = (checked: boolean) => {
+        updateForm(`${path}.waktuSampaiSelesai`, checked);
+        // Jika dicentang, kosongkan nilai waktu selesai
+        if (checked) {
+            updateForm(`${path}.waktuSelesai`, "");
+        }
+    };
+
     return (
         <div className="space-y-4">
             {/* Tanggal & Waktu Mulai */}
@@ -39,7 +46,7 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                             <Button
                                 variant="outline"
                                 className={`w-full justify-between font-normal bg-white ${!acaraData.tanggal && "text-muted-foreground"}`}
-                                disabled={disabled}
+                            // --- HAPUS 'disabled' DARI SINI ---
                             >
                                 {acaraData.tanggal ? format(new Date(acaraData.tanggal), "dd MMMM yyyy", { locale: localeId }) : "Pilih Tanggal"}
                                 <ChevronDownIcon className="ml-2 h-4 w-4" />
@@ -62,7 +69,7 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                         value={acaraData.waktuMulai || ''}
                         onChange={e => updateForm(`${path}.waktuMulai`, e.target.value)}
                         className="bg-white"
-                        disabled={disabled}
+                    // --- HAPUS 'disabled' DARI SINI ---
                     />
                 </div>
             </div>
@@ -74,7 +81,8 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                     <Checkbox
                         id={`${path}.sampaiSelesai`}
                         checked={acaraData.waktuSampaiSelesai}
-                        onCheckedChange={checked => updateForm(`${path}.waktuSampaiSelesai`, checked)}
+                        // Gunakan handler baru
+                        onCheckedChange={handleSampaiSelesaiChange}
                         disabled={disabled}
                     />
                     <label
@@ -84,15 +92,17 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                         Sampai Selesai
                     </label>
                 </div>
-                {!acaraData.waktuSampaiSelesai && (
-                    <Input
-                        type="time"
-                        value={acaraData.waktuSelesai || ''}
-                        onChange={e => updateForm(`${path}.waktuSelesai`, e.target.value)}
-                        className="bg-white mt-2"
-                        disabled={disabled}
-                    />
-                )}
+
+                {/* --- PERBAIKAN DI SINI --- */}
+                {/* Input sekarang selalu di-render, tetapi dinonaktifkan secara kondisional */}
+                <Input
+                    type="time"
+                    value={acaraData.waktuSelesai || ''}
+                    onChange={e => updateForm(`${path}.waktuSelesai`, e.target.value)}
+                    className="bg-white mt-2 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    // Dinonaktifkan jika 'disabled' dari props atau jika 'sampaiSelesai' dicentang
+                    disabled={disabled || acaraData.waktuSampaiSelesai}
+                />
             </div>
 
             <Separator />
@@ -102,7 +112,7 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                 acaraData={acaraData}
                 path={path}
                 updateForm={updateForm}
-                disabled={disabled}
+                disabled={disabled} // <-- 'disabled' HANYA DITERAPKAN DI SINI
             />
         </div>
     );

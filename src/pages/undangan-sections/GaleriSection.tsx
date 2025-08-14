@@ -2,60 +2,116 @@ import React from "react";
 import type { Theme } from "@/types/theme";
 import { motion } from 'framer-motion';
 
-type GaleriSectionProps = {
+// --- Props Utama (Tidak berubah) ---
+interface GaleriSectionProps {
   theme: Theme;
   images: string[];
 };
 
 const variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: (i = 1) => ({
+  visible: (i: number = 1) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: 'easeOut' as const }
+    transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' as const }
   })
 };
 
-const GaleriSection: React.FC<GaleriSectionProps> = ({ theme, images }) => (
-  <div
-    className={`page relative`}
-    style={{ color: theme.primaryColor, background: theme.backgroundColor }}
-  >
-    <div className="flex flex-col justify-center items-center h-full w-11/12 mb-12">
-      <motion.h2
+// ===============================================================
+// SUB-KOMPONEN UNTUK LAYOUT 'CLASSIC' (Desain Grid Standar)
+// ===============================================================
+const ClassicGaleriLayout: React.FC<GaleriSectionProps> = ({ theme, images }) => (
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
+    {images.map((img, i) => (
+      <motion.div
+        key={i}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={variants}
-        custom={1}
-        className={`text-3xl text-center mb-6 tracking-wider ${theme.fontTitle}`}
-        style={{ color: theme.primaryColor }}
+        custom={i + 1}
+        className="aspect-[3/4] w-full overflow-hidden rounded-xl border shadow-lg group"
+        style={{ borderColor: theme.colors.secondary }}
       >
-        Galeri
-      </motion.h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
-        {images.map((img, i) => (
-          <motion.div
-            key={i}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={variants}
-            custom={i + 2}
-            className="aspect-[3/4] w-full overflow-hidden rounded-xl border shadow-lg"
-            style={{ borderColor: theme.secondaryColor }}
-          >
-            <img
-              src={img}
-              alt={`Galeri ${i + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        ))}
-      </div>
-
-    </div>
+        <img
+          src={img}
+          alt={`Galeri ${i + 1}`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </motion.div>
+    ))}
   </div>
 );
 
-export default GaleriSection; 
+// ===============================================================
+// SUB-KOMPONEN UNTUK LAYOUT 'MODERN' (Desain Masonry/Pinterest Style)
+// ===============================================================
+const ModernGaleriLayout: React.FC<GaleriSectionProps> = ({ theme, images }) => (
+  <div className="w-full max-w-5xl columns-2 md:columns-3 gap-4">
+    {images.map((img, i) => (
+      <motion.div
+        key={i}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={variants}
+        custom={i + 1}
+        className="mb-4 break-inside-avoid rounded-xl overflow-hidden border shadow-lg group"
+        style={{ borderColor: theme.colors.secondary }}
+      >
+        <img
+          src={img}
+          alt={`Galeri ${i + 1}`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </motion.div>
+    ))}
+  </div>
+);
+
+
+// ===============================================================
+// Komponen Utama yang Menjadi "Dispatcher"
+// ===============================================================
+const GaleriSection: React.FC<GaleriSectionProps> = (props) => {
+  const { theme, images } = props;
+
+  if (!images || images.length === 0) {
+    return null;
+  }
+
+  const renderLayout = () => {
+    switch (theme.layout) {
+      case 'modern':
+        return <ModernGaleriLayout {...props} />;
+      case 'classic':
+      default:
+        return <ClassicGaleriLayout {...props} />;
+    }
+  };
+
+  return (
+    <section
+      className="relative py-16 px-4 flex flex-col items-center justify-center"
+      style={{ background: theme.colors.background }}
+    >
+      <div className="w-full max-w-5xl text-center flex flex-col items-center">
+        <motion.h2
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={variants}
+          custom={0}
+          className={`text-4xl md:text-5xl mb-12 ${theme.fontTitle}`}
+          style={{ color: theme.colors.primary }}
+        >
+          Momen Bahagia Kami
+        </motion.h2>
+
+        {renderLayout()}
+      </div>
+    </section>
+  );
+};
+
+export default GaleriSection;

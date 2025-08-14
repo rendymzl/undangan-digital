@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import { logout } from "@/features/auth/authService"
+import logo from "@/assets/logo-menantikan.png"
 
 const menuUtama = [
   {
@@ -25,9 +26,9 @@ const menuUtama = [
   },
   {
     title: "Buat Undangan",
-    url: "/dashboard/buat-undangan",
+    url: "/dashboard/pilih-template",
     icon: Plus,
-    match: (pathname: string) => pathname === "/dashboard/buat-undangan",
+    match: (pathname: string) => pathname === "/dashboard/pilih-template" || pathname === "/dashboard/buat-undangan",
   },
   // Hapus menu 'Undangan Saya'
 ]
@@ -72,8 +73,8 @@ export function AppSidebar() {
       <div className="flex flex-col h-full">
         {/* Logo atau Judul Aplikasi */}
         <div className="flex items-center gap-2 px-4 py-5 border-b">
-          <img src="/logo.svg" alt="Logo" className="w-8 h-8" />
-          <span className="font-bold text-lg tracking-wide text-gray-800">Dua Mempelai</span>
+          <img src={logo} alt="Logo" className="w-8 h-8" />
+          <span className="font-bold text-lg tracking-wide text-gray-800">Menantikan</span>
         </div>
         <SidebarContent className="flex-1 flex flex-col justify-between">
           <div>
@@ -87,11 +88,10 @@ export function AppSidebar() {
                         asChild
                         isActive={item.match(pathname)}
                         // Hapus hover custom, gunakan default shadcn
-                        className={`rounded-lg px-3 py-2 flex items-center gap-2 font-medium text-sm ${
-                          item.match(pathname)
+                        className={`rounded-lg px-3 py-2 flex items-center gap-2 font-medium text-sm ${item.match(pathname)
                             ? "bg-blue-100 text-blue-700"
                             : ""
-                        }`}
+                          }`}
                         data-active={item.match(pathname) ? "true" : undefined}
                       >
                         <a href={item.url} tabIndex={0}>

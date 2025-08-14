@@ -11,4 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    // ... other server options
+    host: true, // or a specific IP address like '0.0.0.0'
+  },
 })

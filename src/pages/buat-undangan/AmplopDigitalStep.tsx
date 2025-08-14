@@ -91,7 +91,7 @@ const AmplopDigitalStep: React.FC<AmplopDigitalStepProps> = ({ value, onChange }
                 placeholder="Nomor rekening atau e-wallet"
               />
             </div>
-            <div>
+            {/* <div>
               <Label htmlFor={`catatan-${idx}`} className="block text-sm font-medium mb-1">Catatan (opsional)</Label>
               <Input
                 id={`catatan-${idx}`}
@@ -100,8 +100,8 @@ const AmplopDigitalStep: React.FC<AmplopDigitalStepProps> = ({ value, onChange }
                 onChange={e => handleChange(idx, 'catatan', e.target.value)}
                 placeholder="Misal: Untuk e-wallet"
               />
-            </div>
-            <div className="md:col-span-2">
+            </div> */}
+            {/* <div className="md:col-span-2">
               <Label htmlFor={`qrUrl-${idx}`} className="block text-sm font-medium mb-1">QR Code (opsional)</Label>
               <Input
                 id={`qrUrl-${idx}`}
@@ -113,7 +113,7 @@ const AmplopDigitalStep: React.FC<AmplopDigitalStepProps> = ({ value, onChange }
               {item.qrUrl && (
                 <img src={item.qrUrl} alt="QR Code" className="mt-2 h-24 rounded border p-1" />
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       ))}

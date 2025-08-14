@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import type { Theme } from '@/types/theme'; // <-- 1. Import tipe Theme
+import type { Theme } from '@/types/theme';
 
-// --- 2. Perbarui Props ---
+// --- Props (Tidak berubah) ---
 interface CountdownProps {
     targetDate: string | null;
-    theme: Theme; // Tambahkan theme sebagai prop
+    theme: Theme;
 }
 
 interface TimeLeft {
@@ -31,7 +31,6 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, theme }) => {
             };
         };
 
-        // Langsung set waktu saat komponen dimuat
         setTimeLeft(calculateTimeLeft());
 
         const timer = setInterval(() => {
@@ -55,13 +54,14 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, theme }) => {
     return (
         <div className="mt-8 flex justify-center space-x-2 sm:space-x-4">
             {timeUnits.map((unit, index) => (
-                // --- 3. Terapkan Style dari Theme ---
                 <div
                     key={index}
                     className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-lg p-2 shadow-lg"
                     style={{
-                        backgroundColor: theme.primaryColor,
-                        color: theme.backgroundColor,
+                        // --- PERBAIKAN UTAMA DI SINI ---
+                        // Gunakan 'theme.colors' untuk mengakses palet warna
+                        backgroundColor: theme.colors.primary,
+                        color: theme.colors.primaryForeground,
                     }}
                 >
                     <span className={`text-2xl sm:text-3xl font-bold ${theme.fontTitle}`}>

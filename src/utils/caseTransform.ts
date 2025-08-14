@@ -59,6 +59,8 @@ export interface InvitationFormData {
   backsoundUrl: string | null;
   backsoundFile: File | null;
   customColors: CustomColors | null;
+  fontTitle: string;
+  fontText: string;
 }
 
 /**
@@ -83,6 +85,8 @@ export function invitationToForm(data: any): InvitationFormData {
     backsoundUrl: data.backsound_url || null,
     backsoundFile: null,
     customColors: data.custom_colors || null,
+    fontTitle: data.font_title || null,
+    fontText: data.font_text || null,
 
     adaAkad: !!(data.tanggal_akad && data.lokasi_akad),
     adaResepsi: !!(data.tanggal_resepsi && data.lokasi_resepsi),
@@ -160,6 +164,8 @@ export function invitationToApi(inv: Partial<Invitation>): any {
     cover_tipe: inv.coverTipe,
     cover_gambar_pilihan: inv.coverGambarPilihan,
     theme_id: inv.themeId,
+    font_title: inv.fontTitle,
+    font_text: inv.fontText,
     galeri_aktif: inv.galeriAktif,
     backsound_url: inv.backsoundUrl,
     custom_colors: inv.customColors,
@@ -222,18 +228,23 @@ export function invitationFromApi(data: any): Invitation {
     userId: data.user_id,
     slug: data.slug,
     createdAt: data.created_at,
+    expiredAt: data.expired_at,
     urutanMempelai: data.urutan_mempelai || "pria-wanita",
+    payment_proofs: data.payment_proofs || [],
     lokasiResepsiSamaDenganAkad: data.lokasi_resepsi_sama_dengan_akad || false,
     ceritaCinta: data.cerita_cinta || null,
     coverUrl: data.cover_url || null,
     coverTipe: data.cover_tipe || 'upload',
     coverGambarPilihan: data.cover_gambar_pilihan || null,
     themeId: data.theme_id || "default",
+    fontTitle: data.font_title,
+    fontText: data.font_text,
     galeriAktif: data.galeri_aktif || false,
     backsoundUrl: data.backsound_url || null,
     customColors: data.custom_colors || null,
     galeri: (data.galeri || []).map(photoFromApi),
     amplopDigital: (data.amplop_digital || []).map(amplopFromApi),
+    rsvp: (data.rsvp || []).map(rsvpFromApi),
 
     // Objek untuk Mempelai Pria
     mempelaiPria: {

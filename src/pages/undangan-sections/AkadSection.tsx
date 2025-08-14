@@ -1,7 +1,7 @@
 import type { Theme } from "@/types/theme";
 import React, { useEffect, useState } from "react";
-import TopSVG from "../../components/ornament/topSVG";
-import RightSVG2 from "../../components/ornament/rightSVG2";
+import TopSVG from "../../components/ornament/floraCenter2";
+import RightSVG2 from "../../components/ornament/floraRight2";
 import { motion } from 'framer-motion';
 
 type AkadSectionProps = {
@@ -107,7 +107,7 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
   const showButton = !!(data.lokasiAkadUrl || (data.lokasiAkadLat && data.lokasiAkadLng) || data.lokasiAkad);
 
   return (
-    <div className={`page relative overflow-hidden`} style={{ color: theme.primaryColor, background: theme.backgroundColor }}>
+    <div className={`page relative overflow-hidden`} style={{ color: theme.colors.primary, background: theme.colors.background }}>
       {/* Ornamen Atas */}
       {/* <motion.div
         initial={{ opacity: 0, scale: 0.7, y: -40 }}
@@ -117,7 +117,7 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
         className="absolute left-1/2 top-6 -translate-x-1/2 z-20 scale-75 opacity-80"
         style={{ marginTop: '-2rem' }}
       >
-        <TopSVG color={theme.primaryColor} />
+        <TopSVG theme={theme} />
       </motion.div> */}
       {/* <motion.div
         initial={{ opacity: 0, scale: 0.7, y: -40 }}
@@ -126,7 +126,7 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
         transition={{ duration: 0.7, ease: 'easeOut' }}
         className="absolute right-2 z-0 origin-top-right transform"
       >
-        <RightSVG2 color={theme.primaryColor} />
+        <RightSVG2 theme={theme} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.7, y: -40 }}
@@ -136,27 +136,27 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
         className="absolute left-2 z-0 origin-top-right transform"
       >
         <div className="scale-x-[-1]">
-          <RightSVG2 color={theme.primaryColor} />
+          <RightSVG2 theme={theme} />
         </div>
       </motion.div> */}
       <div className="flex flex-col justify-center items-center min-h-screen relative z-10 py-12 px-4 md:px-8">
-        <div className="relative max-w-xl w-full mx-4 p-8 rounded-2xl backdrop-blur-sm" style={{ background: `linear-gradient(135deg, ${theme.backgroundColor}f0, ${theme.backgroundColor}80)`, border: `1px solid ${theme.primaryColor}30` }}>
+        <div className="relative max-w-xl w-full mx-4 p-8 rounded-2xl backdrop-blur-sm" style={{ background: `linear-gradient(135deg, ${theme.colors.background}f0, ${theme.colors.background}80)`, border: `1px solid ${theme.colors.primary}30` }}>
           <div className="text-center mb-12">
-            <h2 className={`text-4xl md:text-5xl ${theme.fontTitle}`} style={{ color: theme.primaryColor }}>Akad Nikah</h2>
-            <div className="w-24 h-1 mx-auto rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${theme.primaryColor}, transparent)` }}></div>
+            <h2 className={`text-4xl md:text-5xl ${theme.fontTitle}`} style={{ color: theme.colors.primary }}>Akad Nikah</h2>
+            <div className="w-24 h-1 mx-auto rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${theme.colors.primary}, transparent)` }}></div>
           </div>
           {/* Ornamen kanan/kiri bisa ditambahkan di sini */}
           <div className="flex justify-center mb-8">
-            <div className="inline-block border-2 rounded-lg overflow-hidden shadow-lg" style={{ borderColor: theme.primaryColor }}>
+            <div className="inline-block border-2 rounded-lg overflow-hidden shadow-lg" style={{ borderColor: theme.colors.primary }}>
               <motion.div
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
                 className="px-4 py-2 text-center"
-                style={{ background: theme.primaryColor }}
+                style={{ background: theme.colors.primary }}
               >
-                <div className="text-lg font-medium tracking-wide" style={{ color: theme.backgroundColor }}>{tanggalAkadStr}</div>
+                <div className="text-lg font-medium tracking-wide" style={{ color: theme.colors.background }}>{tanggalAkadStr}</div>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 32 }}
@@ -164,10 +164,10 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: 0.22, ease: 'easeOut' }}
                 className="px-4 py-4 text-center"
-                style={{ background: theme.backgroundColor }}
+                style={{ background: theme.colors.background }}
               >
-                <div className="text-3xl font-bold" style={{ color: theme.primaryColor }}>{waktuAkadStr}</div>
-                <div className="mt-2 text-sm font-medium text-gray-700" style={{ color: theme.primaryColor }}>
+                <div className="text-3xl font-bold" style={{ color: theme.colors.primary }}>{waktuAkadStr}</div>
+                <div className="mt-2 text-sm font-medium text-gray-700" style={{ color: theme.colors.primary }}>
                   {countdown}
                 </div>
               </motion.div>
@@ -192,9 +192,9 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
             transition={{ duration: 0.6, delay: 0.46, ease: 'easeOut' }}
             className="flex items-center justify-center gap-4 my-6"
           >
-            <div className="flex-1 h-px" style={{ background: `${theme.primaryColor}40` }}></div>
-            <div className="text-2xl" style={{ color: theme.primaryColor }}>❦</div>
-            <div className="flex-1 h-px" style={{ background: `${theme.primaryColor}40` }}></div>
+            <div className="flex-1 h-px" style={{ background: `${theme.colors.primary}40` }}></div>
+            <div className="text-2xl" style={{ color: theme.colors.primary }}>❦</div>
+            <div className="flex-1 h-px" style={{ background: `${theme.colors.primary}40` }}></div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 32 }}
@@ -203,8 +203,8 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
             transition={{ duration: 0.6, delay: 0.58, ease: 'easeOut' }}
             className="text-center"
           >
-            <h3 className="text-xl mb-3" style={{ color: theme.primaryColor }}>Bertempat di</h3>
-            <p className="text-sm mb-2" style={{ color: theme.primaryColor }}>{data.lokasiAkad}</p>
+            <h3 className="text-xl mb-3" style={{ color: theme.colors.primary }}>Bertempat di</h3>
+            <p className="text-sm mb-2" style={{ color: theme.colors.primary }}>{data.lokasiAkad}</p>
           </motion.div>
           {/* Tampilkan tombol hanya jika ada koordinat */}
           {showButton && (
@@ -217,7 +217,7 @@ const AkadSection: React.FC<AkadSectionProps> = ({ theme, data }) => {
             >
               <button 
                 className="group relative px-6 py-3 rounded-lg overflow-hidden transition-all duration-300" 
-                style={{ background: theme.primaryColor, color: theme.backgroundColor }} 
+                style={{ background: theme.colors.primary, color: theme.colors.background }} 
                 onClick={handleClickLokasi}
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-black transition-opacity duration-300"></div>

@@ -14,31 +14,36 @@ export function useUndanganData(previewData?: Invitation) {
   const [theme, setTheme] = useState<Theme>(themes[0]);
   const [ucapanList, setUcapanList] = useState<RSVP[]>([]);
   const [loading, setLoading] = useState(!previewData);
-  const [isLocked, setIsLocked] = useState(!previewData);
+  const [isLocked, setIsLocked] = useState(true);
+  const [isExpired, setIsExpired] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Pagination state
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5); // atau sesuai kebutuhan
+  const [pageSize] = useState(5); // pageSize tetap, tidak perlu diubah-ubah
   const [totalCount, setTotalCount] = useState(0);
 
-  const fetchUcapan = useCallback(async (invitationId: string, pageNum: number) => {
-    try {
-      const response = await getRSVPByInvitation(invitationId, pageNum, pageSize);
-      if (response?.data) {
-        setUcapanList(response.data.map(rsvpFromApi));
-        setTotalCount(response.count || 0);
-        setPage(pageNum);
+  // Fungsi fetch ucapan dengan pagination
+  const fetchUcapan = useCallback(
+    async (invitationId: string, pageNum: number) => {
+      try {
+        const response = await getRSVPByInvitation(invitationId, pageNum, pageSize);
+        if (response?.data) {
+          setUcapanList(response.data.map(rsvpFromApi));
+          setTotalCount(response.count || 0);
+          setPage(pageNum);
+        }
+      } catch (error) {
+        console.error('Gagal memuat ucapan:', error);
+        toast.error('Gagal memuat ucapan.');
       }
-    } catch (error) {
-      console.error('Gagal memuat ucapan:', error);
-      toast.error('Gagal memuat ucapan.');
-    }
-  }, [pageSize]);
+    },
+    [pageSize]
+  );
 
   // Efek untuk memuat data undangan & RSVP dari API
   useEffect(() => {
-    // Jika ada previewData, gunakan itu dan jangan fetch dari API
     if (previewData) {
       setInvitation(previewData);
       const selectedTheme = themes.find(t => t.id === previewData.themeId) || themes[0];
@@ -58,29 +63,33 @@ export function useUndanganData(previewData?: Invitation) {
         }
 
         const transformedData = invitationFromApi(apiData);
+
+        if (transformedData.expiredAt) {
+          const expiryTime = new Date(transformedData.expiredAt).getTime();
+          const now = new Date().getTime();
+
+          // Jika waktu sekarang sudah melewati waktu kedaluwarsa
+          if (now > expiryTime) {
+            setIsExpired(true); // Set status kedaluwarsa
+          }
+        }
+
         setInvitation(transformedData);
 
         const selectedTheme = themes.find(t => t.id === transformedData.themeId) || themes[0];
         setTheme(selectedTheme);
 
         await fetchUcapan(transformedData.id, 1);
-
-        // Fetch ucapan setelah data undangan berhasil didapat
-        // const response = await getRSVPByInvitation(transformedData.id, 1, 5); // Ambil halaman pertama
-        // if (response?.data) {
-        //   setUcapanList(response.data.map(rsvpFromApi));
-        // }
       } catch (err) {
         console.error(err);
         toast.error((err as Error).message);
-        // Anda bisa arahkan pengguna ke halaman 404 di sini
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [slug, previewData]);
+  }, [slug, previewData, fetchUcapan]);
 
   // Fungsi untuk aksi-aksi pengguna
   const handleOpenUndangan = () => {
@@ -100,6 +109,7 @@ export function useUndanganData(previewData?: Invitation) {
     }
   };
 
+  // Fungsi submit ucapan, setelah submit reload halaman pertama ucapan
   const handleUcapanSubmit = async (form: { guestName: string; message: string; attendanceStatus: 'attending' | 'not_attending' | 'pending' }) => {
     if (!invitation) return;
     try {
@@ -112,11 +122,8 @@ export function useUndanganData(previewData?: Invitation) {
       await createUcapan(rsvpData);
       toast.success("Terima kasih atas ucapan dan konfirmasinya!");
 
-      // Muat ulang daftar ucapan untuk menampilkan yang terbaru
-      const response = await getRSVPByInvitation(invitation.id, 1, 5);
-      if (response?.data) {
-        setUcapanList(response.data.map(rsvpFromApi));
-      }
+      // Setelah submit, reload halaman pertama dan reset page ke 1
+      await fetchUcapan(invitation.id, 1);
     } catch (err) {
       toast.error("Gagal mengirim ucapan.");
       console.error(err);
@@ -133,6 +140,7 @@ export function useUndanganData(previewData?: Invitation) {
     ucapanList,
     loading,
     isLocked,
+    isExpired,
     isPlaying,
     audioRef,
     guestName,
@@ -142,6 +150,12 @@ export function useUndanganData(previewData?: Invitation) {
     page,
     pageSize,
     totalCount,
-    fetchUcapan,
+    fetchUcapan: (invitationId: string, pageNum: number) => {
+      // Pastikan pageNum valid (tidak kurang dari 1)
+      const validPage = Math.max(1, pageNum);
+      if (invitation) {
+        fetchUcapan(invitationId, validPage);
+      }
+    },
   };
 }

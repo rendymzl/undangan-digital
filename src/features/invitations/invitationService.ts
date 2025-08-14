@@ -12,8 +12,15 @@ export function createInvitation(apiData: any) {
     .single();         // <-- Kembalikan satu baris hasil
 }
 
+// Di dalam file features/invitations/invitationService.ts
+
 export async function getInvitationsByUser(userId: string) {
-  return await supabase.from('invitations').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+  return await supabase
+    .from('invitations')
+    // --- PERBAIKI DI SINI: Ganti 'status' dengan '*' ---
+    .select('*, payment_proofs(*), rsvp(*)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
 }
 
 export async function getInvitationBySlug(slug: string) {

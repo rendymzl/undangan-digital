@@ -3,9 +3,8 @@ import { Card } from "../../../components/ui/card";
 import { Label } from "../../../components/ui/label";
 import { Switch } from "../../../components/ui/switch";
 import { Checkbox } from "../../../components/ui/checkbox";
-import type { InvitationFormData } from "@/utils/caseTransform";
 import { AcaraForm } from "./AcaraForm";
-
+import type { InvitationFormData } from "@/utils/caseTransform";
 
 type Props = {
   form: InvitationFormData;
@@ -24,7 +23,8 @@ const DetailAcaraStep: React.FC<Props> = ({ form, updateForm }) => {
   }, [form.akad, form.lokasiResepsiSamaDenganAkad, updateForm]);
 
   return (
-    <div className="space-y-6">
+    // --- PERBAIKAN UTAMA DI SINI ---
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* --- KARTU AKAD NIKAH --- */}
       <Card className="p-6 border-green-200 bg-green-50 overflow-hidden">
         <div className="flex items-center justify-between mb-4">

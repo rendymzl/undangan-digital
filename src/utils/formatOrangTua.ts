@@ -9,12 +9,14 @@ export const formatOrangTua = (
   isPria: boolean
 ): string | null => {
   if (!bapak && !ibu) return null;
+
   const bapakTrim = toTitleCase(bapak?.trim() ?? '');
   const ibuTrim = toTitleCase(ibu?.trim() ?? '');
   const anakKeTrim = anakKe?.trim();
+
   const bapakPrefix = almBapak ? "Alm. Bapak" : "Bapak";
   const ibuPrefix = almIbu ? "Almh. Ibu" : "Ibu";
-  const anakPrefix = isPria ? "Putra" : "Putri";
+  const genderPrefix = isPria ? "Putra" : "Putri";
 
   let orangTuaText = "";
   if (bapakTrim && ibuTrim) {
@@ -27,8 +29,17 @@ export const formatOrangTua = (
     return null;
   }
 
+  // --- PERBAIKAN LOGIKA DI SINI ---
   if (anakKeTrim) {
-    return `${anakPrefix} ke-${anakKeTrim} dari ${orangTuaText}`;
+    // Cek apakah input adalah angka yang valid
+    const isNumeric = !isNaN(parseInt(anakKeTrim, 10)) && isFinite(Number(anakKeTrim));
+
+    // Jika angka, gunakan format "Putra ke-2".
+    // Jika teks (cth: "Bungsu"), gunakan format "Putra Bungsu".
+    const anakDetail = isNumeric ? `ke-${anakKeTrim}` : anakKeTrim;
+
+    return `${genderPrefix} ${anakDetail} dari ${orangTuaText}`;
   }
-  return `${anakPrefix} dari ${orangTuaText}`;
+
+  return `${genderPrefix} dari ${orangTuaText}`;
 };

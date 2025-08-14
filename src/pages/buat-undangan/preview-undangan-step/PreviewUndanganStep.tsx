@@ -6,8 +6,8 @@ import { SlugGenerator } from './SlugGenerator';
 import { BacksoundSelector } from './BacksoundSelector';
 import { InvitationPreviewCard } from './InvitationPreviewCard';
 import { themes } from '@/types/theme';
-import type { InvitationFormData } from '@/utils/caseTransform';
 import { ThemeSelector } from './ThemeSelector';
+import type { InvitationFormData } from '@/utils/caseTransform';
 
 type Props = {
   form: InvitationFormData;
@@ -23,45 +23,41 @@ type Props = {
 };
 
 const PreviewUndanganStep: React.FC<Props> = ({ form, updateForm, formatOrangTua }) => {
-  // Logika untuk menggabungkan tema default dengan warna kustom untuk preview
   const activeTheme = themes.find(t => t.id === form.themeId) || themes[0];
+
   const finalTheme = {
     ...activeTheme,
-    customColors: form.customColors,
+    fontTitle: form.fontTitle || activeTheme.fontTitle,
+    fontText: form.fontText || activeTheme.fontText,
+    colors: form.customColors || activeTheme.colors,
   };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Komponen Slug */}
-      <SlugGenerator form={form} updateForm={updateForm} />
+    // --- PERBAIKAN UTAMA DI SINI: Layout Grid ---
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-      {/* 2. Pengaturan Galeri (Sederhana, jadi tetap di sini) */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pengaturan Galeri</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="galeri-aktif"
-              checked={form.galeriAktif}
-              onCheckedChange={(checked) => updateForm('galeriAktif', checked)}
-            />
-            <Label htmlFor="galeri-aktif">Tampilkan galeri foto pada undangan</Label>
-          </div>
-        </CardContent>
-      </Card>
+      {/* --- KOLOM KIRI: KONTROL PENGATURAN --- */}
+      <div className="lg:col-span-3 space-y-6">
 
-      {/* 3. Komponen Backsound */}
-      <BacksoundSelector form={form} updateForm={updateForm} />
+        <BacksoundSelector form={form} updateForm={updateForm} />
 
-      {/* 4. Komponen Tema & Warna */}
-      <ThemeSelector form={form} updateForm={updateForm} />
+        <ThemeSelector form={form} updateForm={updateForm} />
+      </div>
 
-      {/* 5. Komponen Kartu Preview */}
-      <div className="pt-6">
-        <Label className="text-base font-semibold text-gray-800 mb-2 block text-center">Live Preview</Label>
-        <InvitationPreviewCard form={form} theme={finalTheme} formatOrangTua={formatOrangTua} />
+      {/* --- KOLOM KANAN: LIVE PREVIEW --- */}
+      <div className="lg:col-span-2">
+        <div className="sticky top-8">
+          <SlugGenerator form={form} updateForm={updateForm} />
+          {/* Membuat preview tetap terlihat saat scroll */}
+          <Label className="text-base font-semibold text-gray-800 mb-2 mt-4 block text-center">
+            Pratinjau Langsung
+          </Label>
+          <InvitationPreviewCard
+            form={form}
+            theme={finalTheme}
+            formatOrangTua={formatOrangTua}
+          />
+        </div>
       </div>
     </div>
   );

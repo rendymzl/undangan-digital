@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { register } from "../features/auth/authService";
 import { toast } from "sonner";
 import { useAuth } from "../features/auth/useAuth";
-import { useEffect } from "react";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -33,32 +32,47 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="max-w-md w-full p-8 shadow-lg text-center">
-        <h2 className="text-2xl font-bold mb-4">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Loading..." : "Register"}
-          </Button>
-        </form>
-        <div className="mt-4 text-sm">
-          Sudah punya akun? <a href="/login" className="text-blue-600">Login</a>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-2">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Sisi Kiri: Ilustrasi atau Info (hanya tampil di desktop) */}
+        <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-primary/5 p-8">
+          <h2 className="text-3xl font-bold text-primary mb-4">Selamat Datang!</h2>
+          <p className="text-muted-foreground text-lg text-center">
+            Daftar untuk mulai membuat undangan pernikahan digitalmu sendiri dengan mudah dan cepat.
+          </p>
+          {/* Bisa tambahkan ilustrasi di sini jika ada */}
         </div>
-      </Card>
+        {/* Sisi Kanan: Form Register */}
+        <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
+          <Card className="w-full max-w-md mx-auto shadow-none border-0 md:shadow-none md:border-0 text-center bg-transparent">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Register</h2>
+            <form onSubmit={handleSubmit} className="space-y-4 text-left">
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                className="text-base"
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                className="text-base"
+              />
+              <Button type="submit" disabled={loading} className="w-full text-base">
+                {loading ? "Loading..." : "Register"}
+              </Button>
+            </form>
+            <div className="mt-4 text-sm text-center">
+              Sudah punya akun? <a href="/login" className="text-blue-600 hover:underline">Login</a>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
-} 
+}

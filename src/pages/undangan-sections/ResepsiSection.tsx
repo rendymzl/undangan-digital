@@ -1,7 +1,7 @@
 import React from "react";
 import type { Theme } from "@/types/theme";
-import TopSVG from "../../components/ornament/topSVG";
-import RightSVG2 from "../../components/ornament/rightSVG2";
+import TopSVG from "../../components/ornament/floraCenter2";
+import RightSVG2 from "../../components/ornament/floraRight2";
 import { motion } from 'framer-motion';
 import { useEffect, useState } from "react";
 
@@ -122,7 +122,7 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
   return (
     <div
       className={`page relative overflow-hidden`}
-      style={{ color: theme.primaryColor, background: theme.backgroundColor }}
+      style={{ color: theme.colors.primary, background: theme.colors.background }}
     >
       {/* Ornamen Atas */}
       <motion.div
@@ -132,7 +132,7 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
         transition={{ duration: 0.7, ease: 'easeOut' }}
         className="absolute top-0 left-1/2 -translate-x-1/2 z-0 scale-75 opacity-80"
       >
-        <TopSVG color={theme.primaryColor} />
+        <TopSVG theme={theme} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.7, y: -40 }}
@@ -141,7 +141,7 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
         transition={{ duration: 0.7, ease: 'easeOut' }}
         className="absolute right-2 z-0 origin-top-right transform"
       >
-        <RightSVG2 color={theme.primaryColor} />
+        <RightSVG2 theme={theme} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.7, y: -40 }}
@@ -151,11 +151,11 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
         className="absolute left-2 z-0 origin-top-right transform"
       >
         <div className="scale-x-[-1]">
-          <RightSVG2 color={theme.primaryColor} />
+          <RightSVG2 theme={theme} />
         </div>
       </motion.div>
       <div className="flex flex-col justify-center items-center min-h-screen relative z-10 py-12 px-4 md:px-8">
-        <div className="relative max-w-xl w-full mx-4 p-8 rounded-2xl backdrop-blur-sm" style={{ background: `${theme.backgroundColor}`, border: `1px solid ${theme.primaryColor}30` }}>
+        <div className="relative max-w-xl w-full mx-4 p-8 rounded-2xl backdrop-blur-sm" style={{ background: `${theme.colors.background}`, border: `1px solid ${theme.colors.primary}30` }}>
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -164,8 +164,8 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
             custom={1}
             className="text-center mb-12"
           >
-            <h2 className={`text-4xl md:text-5xl ${theme.fontTitle}`} style={{ color: theme.primaryColor }}>Resepsi</h2>
-            <div className="w-24 h-1 mx-auto rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${theme.primaryColor}, transparent)` }}></div>
+            <h2 className={`text-4xl md:text-5xl ${theme.fontTitle}`} style={{ color: theme.colors.primary }}>Resepsi</h2>
+            <div className="w-24 h-1 mx-auto rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${theme.colors.primary}, transparent)` }}></div>
           </motion.div>
           {/* Ornamen kanan/kiri bisa ditambahkan di sini */}
           <motion.div
@@ -176,13 +176,13 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
             custom={2}
             className="flex justify-center mb-8"
           >
-            <div className="inline-block border-2 rounded-lg overflow-hidden shadow-lg" style={{ borderColor: theme.primaryColor }}>
-              <div className="px-4 py-2 text-center" style={{ background: theme.primaryColor }}>
-                <div className="text-lg font-medium tracking-wide" style={{ color: theme.backgroundColor }}>{tanggalResepsiStr}</div>
+            <div className="inline-block border-2 rounded-lg overflow-hidden shadow-lg" style={{ borderColor: theme.colors.primary }}>
+              <div className="px-4 py-2 text-center" style={{ background: theme.colors.primary }}>
+                <div className="text-lg font-medium tracking-wide" style={{ color: theme.colors.background }}>{tanggalResepsiStr}</div>
               </div>
-              <div className="px-4 py-4 text-center" style={{ background: theme.backgroundColor }}>
-                <div className="text-3xl font-bold" style={{ color: theme.primaryColor }}>{waktuResepsiStr}</div>
-                <div className="mt-2 text-sm font-medium text-gray-700" style={{ color: theme.primaryColor }}>
+              <div className="px-4 py-4 text-center" style={{ background: theme.colors.background }}>
+                <div className="text-3xl font-bold" style={{ color: theme.colors.primary }}>{waktuResepsiStr}</div>
+                <div className="mt-2 text-sm font-medium text-gray-700" style={{ color: theme.colors.primary }}>
                   {countdown}
                 </div>
               </div>
@@ -209,9 +209,9 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
             custom={4}
             className="flex items-center justify-center gap-4 my-6"
           >
-            <div className="flex-1 h-px" style={{ background: `${theme.primaryColor}40` }}></div>
-            <div className="text-2xl" style={{ color: theme.primaryColor }}>❦</div>
-            <div className="flex-1 h-px" style={{ background: `${theme.primaryColor}40` }}></div>
+            <div className="flex-1 h-px" style={{ background: `${theme.colors.primary}40` }}></div>
+            <div className="text-2xl" style={{ color: theme.colors.primary }}>❦</div>
+            <div className="flex-1 h-px" style={{ background: `${theme.colors.primary}40` }}></div>
           </motion.div>
           <motion.div
             initial="hidden"
@@ -221,8 +221,8 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
             custom={5}
             className="text-center"
           >
-            <h3 className="text-xl mb-3" style={{ color: theme.primaryColor }}>Bertempat di</h3>
-            <p className="text-sm mb-2" style={{ color: theme.primaryColor }}>{data.lokasiResepsi}</p>
+            <h3 className="text-xl mb-3" style={{ color: theme.colors.primary }}>Bertempat di</h3>
+            <p className="text-sm mb-2" style={{ color: theme.colors.primary }}>{data.lokasiResepsi}</p>
           </motion.div>
           {/* Tampilkan tombol hanya jika ada koordinat */}
           {showButton && (
@@ -235,7 +235,7 @@ const ResepsiSection: React.FC<ResepsiSectionProps> = ({ theme, data }) => {
             >
               <button 
                 className="group relative px-6 py-3 rounded-lg overflow-hidden transition-all duration-300" 
-                style={{ background: theme.primaryColor, color: theme.backgroundColor }} 
+                style={{ background: theme.colors.primary, color: theme.colors.background }} 
                 onClick={handleClickLokasi}
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-black transition-opacity duration-300"></div>

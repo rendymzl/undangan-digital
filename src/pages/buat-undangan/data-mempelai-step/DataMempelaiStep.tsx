@@ -4,10 +4,9 @@ import { MempelaiFormCard } from "./MempelaiFormCard";
 import { Label } from "@/components/ui/label";
 import type { InvitationFormData } from "@/utils/caseTransform";
 
-// --- 2. Perbaiki definisi Props ---
 type Props = {
-  form: InvitationFormData; // Gunakan tipe yang spesifik, bukan 'any'
-  updateForm: (path: string, value: unknown) => void; // 'unknown' lebih aman dari 'any'
+  form: InvitationFormData;
+  updateForm: (path: string, value: unknown) => void;
   formatOrangTua: (
     bapak: string | null,
     ibu: string | null,
@@ -18,7 +17,7 @@ type Props = {
   ) => string | null;
 };
 
-// Definisikan tema warna untuk masing-masing gender
+// Definisikan tema warna
 const priaTheme = {
   base: "text-blue-800",
   background: "bg-blue-50",
@@ -32,10 +31,55 @@ const wanitaTheme = {
 };
 
 const DataMempelaiStep: React.FC<Props> = ({ form, updateForm, formatOrangTua }) => {
+  const renderMempelaiCards = (order: 'pria-first' | 'wanita-first') => (
+    // --- PERBAIKAN UTAMA DI SINI ---
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {order === 'pria-first' ? (
+        <>
+          <MempelaiFormCard
+            gender="pria"
+            title="Mempelai Pria"
+            theme={priaTheme}
+            data={form.mempelaiPria}
+            updateForm={updateForm}
+            formatOrangTua={formatOrangTua}
+          />
+          <MempelaiFormCard
+            gender="wanita"
+            title="Mempelai Wanita"
+            theme={wanitaTheme}
+            data={form.mempelaiWanita}
+            updateForm={updateForm}
+            formatOrangTua={formatOrangTua}
+          />
+        </>
+      ) : (
+        <>
+          <MempelaiFormCard
+            gender="wanita"
+            title="Mempelai Wanita"
+            theme={wanitaTheme}
+            data={form.mempelaiWanita}
+            updateForm={updateForm}
+            formatOrangTua={formatOrangTua}
+          />
+          <MempelaiFormCard
+            gender="pria"
+            title="Mempelai Pria"
+            theme={priaTheme}
+            data={form.mempelaiPria}
+            updateForm={updateForm}
+            formatOrangTua={formatOrangTua}
+          />
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       <Tabs
-        value={form.urutanMempelai} // <-- 3. Gunakan camelCase
+        value={form.urutanMempelai}
         onValueChange={(value) => updateForm("urutanMempelai", value)}
         className="w-full"
       >
@@ -47,42 +91,11 @@ const DataMempelaiStep: React.FC<Props> = ({ form, updateForm, formatOrangTua })
           </TabsList>
         </div>
 
-        <TabsContent value="pria-wanita" className="space-y-6 m-0">
-          {/* --- 4. Oper data yang lebih spesifik ke komponen anak --- */}
-          <MempelaiFormCard
-            gender="pria"
-            title="Mempelai Pria"
-            theme={priaTheme}
-            data={form.mempelaiPria}
-            updateForm={updateForm}
-            formatOrangTua={formatOrangTua}
-          />
-          <MempelaiFormCard
-            gender="wanita"
-            title="Mempelai Wanita"
-            theme={wanitaTheme}
-            data={form.mempelaiWanita}
-            updateForm={updateForm}
-            formatOrangTua={formatOrangTua}
-          />
+        <TabsContent value="pria-wanita" className="m-0">
+          {renderMempelaiCards('pria-first')}
         </TabsContent>
-        <TabsContent value="wanita-pria" className="space-y-6 m-0">
-          <MempelaiFormCard
-            gender="wanita"
-            title="Mempelai Wanita"
-            theme={wanitaTheme}
-            data={form.mempelaiWanita}
-            updateForm={updateForm}
-            formatOrangTua={formatOrangTua}
-          />
-          <MempelaiFormCard
-            gender="pria"
-            title="Mempelai Pria"
-            theme={priaTheme}
-            data={form.mempelaiPria}
-            updateForm={updateForm}
-            formatOrangTua={formatOrangTua}
-          />
+        <TabsContent value="wanita-pria" className="m-0">
+          {renderMempelaiCards('wanita-first')}
         </TabsContent>
       </Tabs>
     </div>

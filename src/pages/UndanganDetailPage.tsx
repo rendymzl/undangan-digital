@@ -1,21 +1,15 @@
 import React from 'react';
-import type { Invitation } from '@/types';
-
-// Import semua komponen section yang dibutuhkan
-import CoverSection from "./undangan-sections/CoverSection";
-import SalamSection from "./undangan-sections/SalamSection";
-import ProfileSection from "./undangan-sections/ProfileSection";
-import AkadSection from "./undangan-sections/AkadSection";
-import ResepsiSection from "./undangan-sections/ResepsiSection";
-import CeritaSection from "./undangan-sections/CeritaSection";
-import GaleriSection from "./undangan-sections/GaleriSection";
-import UcapanDanRSVPSection from "./undangan-sections/UcapanDanRSVPSection";
-import AmplopSection from "./undangan-sections/AmplopSection";
-import PenutupSection from "./undangan-sections/PenutupSection";
-import { Music } from 'lucide-react';
+import type { Invitation, RSVP } from '@/types';
 import { useUndanganData } from '@/hooks/useUndanganData';
-import { formatOrangTua } from '@/utils/formatOrangTua';
-import AcaraSection from './AcaraSection';
+
+// Import komponen-komponen section
+import CoverSection from "./undangan-sections/CoverSection";
+import { Music } from 'lucide-react';
+
+// Import komponen-komponen layout
+import ClassicLayout from './layout/ClassicLayout';
+import ExpiredInvitationPage from './undangan-sections/ExpiredInvitationPage';
+// import ModernLayout from './layout/ModernLayout'; // Pastikan file ini ada
 
 interface UndanganDetailPageProps {
   previewData?: Invitation;
@@ -29,19 +23,23 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
     ucapanList,
     loading,
     isLocked,
+    isExpired,
     isPlaying,
     audioRef,
     guestName,
     handleOpenUndangan,
     handleToggleAudio,
+    handleUcapanSubmit,
     page,
     pageSize,
     totalCount,
     fetchUcapan,
-    handleUcapanSubmit,
   } = useUndanganData(previewData);
 
-  // Tampilkan loading state saat data sedang diambil
+  // Tentukan apakah ini mode preview
+  const isPreview = !!previewData;
+
+  // Tampilkan loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -50,37 +48,53 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
     );
   }
 
-  // Tampilkan pesan jika undangan tidak ditemukan setelah loading selesai
+  // Tampilkan pesan jika undangan tidak ditemukan
   if (!invitation) {
     return <div className="min-h-screen flex items-center justify-center">Undangan tidak ditemukan.</div>;
   }
 
-  // Siapkan props untuk komponen-komponen section
-  const {
-    mempelaiPria,
-    mempelaiWanita,
-    akad,
-    resepsi,
-    urutanMempelai,
-    ceritaCinta,
-    galeri,
-    galeriAktif,
-    amplopDigital
-  } = invitation;
-
-  // Gabungkan tema dasar dengan warna kustom dari pengguna
+  // --- PERBAIKAN UTAMA DI SINI ---
+  // Gabungkan tema dasar dengan warna kustom secara lebih sederhana
   const finalTheme = {
     ...theme,
-    primaryColor: invitation.customColors?.primary || theme.primaryColor,
-    secondaryColor: invitation.customColors?.secondary || theme.secondaryColor,
-    backgroundColor: invitation.customColors?.background || theme.backgroundColor,
-    foregroundColor: invitation.customColors?.foreground || theme.foregroundColor,
+    // Jika ada customColors, gunakan itu. Jika tidak, gunakan colors default dari tema.
+    colors: invitation.customColors || theme.colors,
   };
 
   const DEFAULT_BACKSOUND_URL = '/backsound/wedding-day.mp3';
 
+  // Tentukan nama tamu akhir (finalGuestName) di luar renderLayout agar bisa digunakan di mana saja
+  const finalGuestName = previewData ? "Nama Tamu" : guestName;
+
+  // Fungsi untuk memilih dan me-render layout
+  const renderLayout = () => {
+    const layoutProps = {
+      invitation,
+      theme: finalTheme,
+      ucapanList,
+      handleUcapanSubmit,
+      page,
+      pageSize,
+      totalCount,
+      onPageChange: (newPage: number) => fetchUcapan(invitation.id, newPage),
+      isPreview, // tambahkan isPreview ke props layout
+    };
+
+    switch (finalTheme.layout) {
+      // case 'modern':
+      //   return <ModernLayout {...layoutProps} />;
+      case 'classic':
+      default:
+        return <ClassicLayout {...layoutProps} />;
+    }
+  };
+
+  if (isExpired) {
+    return <ExpiredInvitationPage />;
+  }
+
   return (
-    <div className="w-full min-h-screen flex flex-col items-center" style={{ background: finalTheme.backgroundColor }}>
+    <div className="w-full min-h-screen flex flex-col items-center" style={{ background: finalTheme.colors.background }}>
       <audio
         ref={audioRef}
         src={invitation.backsoundUrl || DEFAULT_BACKSOUND_URL}
@@ -93,7 +107,10 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
         <button
           onClick={handleToggleAudio}
           className="fixed bottom-4 right-4 z-50 w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-white"
-          style={{ background: finalTheme.primaryColor }}
+          style={{
+            background: finalTheme.colors.primary,
+            color: finalTheme.colors.primaryForeground, // Gunakan warna kontras
+          }}
           aria-label={isPlaying ? "Pause Music" : "Play Music"}
         >
           <Music className={`transition-transform duration-300 ${isPlaying ? 'animate-pulse' : ''}`} />
@@ -104,83 +121,24 @@ export default function UndanganDetailPage({ previewData }: UndanganDetailPagePr
         <CoverSection
           theme={finalTheme}
           data={{
-            namaPria: mempelaiPria.nama,
-            namaWanita: mempelaiWanita.nama,
-            namaPanggilanPria: mempelaiPria.namaPanggilan,
-            namaPanggilanWanita: mempelaiWanita.namaPanggilan,
-            tanggal: akad.tanggal || resepsi.tanggal,
-            // --- TAMBAHKAN PROPERTI BERIKUT ---
+            namaPria: invitation.mempelaiPria.nama,
+            namaWanita: invitation.mempelaiWanita.nama,
+            namaPanggilanPria: invitation.mempelaiPria.namaPanggilan,
+            namaPanggilanWanita: invitation.mempelaiWanita.namaPanggilan,
+            urutanMempelai: invitation.urutanMempelai,
+            tanggal: invitation.akad.tanggal || invitation.resepsi.tanggal,
             coverTipe: invitation.coverTipe,
             coverUrl: invitation.coverUrl,
             coverGambarPilihan: invitation.coverGambarPilihan,
-            urutanMempelai: invitation.urutanMempelai,
           }}
-          namaTamu={guestName}
+          namaTamu={finalGuestName}
           onOpen={handleOpenUndangan}
           isLocked={isLocked}
           isFullScreen={true}
         />
 
         {!isLocked && (
-          <>
-            <SalamSection theme={finalTheme} />
-            <ProfileSection
-              theme={finalTheme}
-              data={{
-                mempelai1: urutanMempelai === 'pria-wanita' ? mempelaiPria : mempelaiWanita,
-                mempelai2: urutanMempelai === 'pria-wanita' ? mempelaiWanita : mempelaiPria,
-              }}
-              // --- KIRIM PROPS BARU DI SINI ---
-              formatOrangTua={formatOrangTua}
-              mempelai1IsPria={urutanMempelai === 'pria-wanita'}
-            />
-            {akad.tanggal && akad.lokasi && (
-              <AcaraSection title="Akad Nikah" theme={finalTheme} data={akad} />
-            )}
-            {resepsi.tanggal && resepsi.lokasi && (
-              <AcaraSection title="Resepsi" theme={finalTheme} data={resepsi} />
-            )}
-            {ceritaCinta && (
-              <CeritaSection
-                theme={finalTheme}
-                data={{ cerita: ceritaCinta }}
-              />
-            )}
-            {galeriAktif && galeri && galeri.length > 0 && (
-              <GaleriSection
-                theme={finalTheme}
-                images={galeri.map(foto => foto.url)}
-              />
-            )}
-            <UcapanDanRSVPSection
-              theme={finalTheme}
-              ucapanList={ucapanList}
-              invitationId={invitation.id}
-              onSubmit={handleUcapanSubmit}
-              page={page}
-              pageSize={pageSize}
-              totalCount={totalCount}
-              onPageChange={(newPage) => fetchUcapan(invitation.id, newPage)}
-            />
-            {amplopDigital && amplopDigital.length > 0 && (
-              <AmplopSection
-                theme={finalTheme}
-                data={{
-                  namaPria: mempelaiPria.nama,
-                  namaWanita: mempelaiWanita.nama,
-                  rekening: amplopDigital,
-                }}
-              />
-            )}
-            <PenutupSection
-              theme={finalTheme}
-              data={{
-                namaPria: mempelaiPria.namaPanggilan || mempelaiPria.nama.split(' ')[0],
-                namaWanita: mempelaiWanita.namaPanggilan || mempelaiWanita.nama.split(' ')[0],
-                urutanMempelai: invitation.urutanMempelai,
-              }}
-            />
-          </>
+          renderLayout()
         )}
       </div>
     </div>

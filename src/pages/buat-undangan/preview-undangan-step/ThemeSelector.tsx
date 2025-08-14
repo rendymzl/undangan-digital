@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { RefreshCw, Palette } from "lucide-react";
-import { themes } from "@/types/theme";
+import { Palette, Type } from "lucide-react";
+import { palettes } from '@/types/palettes';
+import { fontPairings, type FontPairing } from '@/types/fontPairings';
 import type { InvitationFormData } from '@/utils/caseTransform';
-import type { CustomColors } from '@/types';
+import { themes, type NamedPalette } from '@/types';
 
 type Props = {
     form: InvitationFormData;
@@ -14,51 +13,33 @@ type Props = {
 };
 
 export const ThemeSelector: React.FC<Props> = ({ form, updateForm }) => {
-    // State lokal untuk mengelola input warna secara langsung
-    const [localColors, setLocalColors] = useState<CustomColors | null>(form.customColors);
-
-    // Efek untuk sinkronisasi state lokal dengan form utama
-    useEffect(() => {
-        // Jika form.customColors null, gunakan warna default dari tema yang dipilih
-        if (!form.customColors) {
-            const selectedTheme = themes.find(t => t.id === form.themeId) || themes[0];
-            setLocalColors({
-                primary: selectedTheme.primaryColor,
-                secondary: selectedTheme.secondaryColor,
-                background: selectedTheme.backgroundColor,
-                foreground: selectedTheme.foregroundColor,
-            });
-        } else {
-            // Jika ada, gunakan warna kustom dari form
-            setLocalColors(form.customColors);
-        }
-    }, [form.themeId, form.customColors]);
 
     const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newThemeId = e.target.value;
-        updateForm('themeId', newThemeId);
-        // Hapus warna kustom agar kembali ke default tema baru
-        updateForm('customColors', null);
+        const selectedTheme = themes.find(t => t.id === newThemeId);
+        if (!selectedTheme) return;
+
+        // Update all related properties when the theme changes
+        updateForm('themeId', selectedTheme.id);
+        updateForm('fontTitle', selectedTheme.fontTitle);
+        updateForm('fontText', selectedTheme.fontText);
+        updateForm('customColors', selectedTheme.colors);
     };
 
-    const handleColorChange = (colorType: keyof CustomColors, value: string) => {
-        if (localColors) {
-            const updatedColors = { ...localColors, [colorType]: value };
-            setLocalColors(updatedColors);
-            updateForm('customColors', updatedColors);
-        }
+    const handlePaletteSelect = (palette: NamedPalette) => {
+        updateForm('customColors', palette.colors);
     };
 
-    const handleResetColors = () => {
-        // Cukup hapus customColors dari form, useEffect akan menanganinya
-        updateForm('customColors', null);
+    const handleFontPairingSelect = (pairing: FontPairing) => {
+        updateForm('fontTitle', pairing.fontTitle);
+        updateForm('fontText', pairing.fontText);
     };
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Palette size={20} /> Pengaturan Tema & Warna
+                    <Palette size={20} /> Tema, Palet Warna & Font
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -77,41 +58,47 @@ export const ThemeSelector: React.FC<Props> = ({ form, updateForm }) => {
                     </select>
                 </div>
 
-                {/* Kustomisasi Warna */}
-                <div>
-                    <div className="flex items-center justify-between mb-2">
-                        <Label>Kustomisasi Warna</Label>
-                        {form.customColors && (
-                            <Button variant="ghost" size="sm" onClick={handleResetColors} className="flex items-center gap-1">
-                                <RefreshCw size={14} /> Reset
-                            </Button>
-                        )}
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {localColors && Object.entries({
-                            primary: 'Warna Utama',
-                            secondary: 'Warna Sekunder',
-                            background: 'Warna Latar',
-                            foreground: 'Warna Teks'
-                        }).map(([key, label]) => (
-                            <div key={key}>
-                                <Label className="text-sm font-medium">{label}</Label>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <input
-                                        type="color"
-                                        value={localColors[key as keyof CustomColors]}
-                                        onChange={(e) => handleColorChange(key as keyof CustomColors, e.target.value)}
-                                        className="w-8 h-8 p-0 border-none rounded cursor-pointer"
-                                    />
-                                    <Input
-                                        type="text"
-                                        value={localColors[key as keyof CustomColors]}
-                                        onChange={(e) => handleColorChange(key as keyof CustomColors, e.target.value)}
-                                        className="flex-1 px-2 py-1 text-sm border rounded bg-white"
-                                    />
+                {/* --- PERBAIKAN UTAMA: Grid Layout for Desktop --- */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t">
+                    {/* Kolom Kiri: Pilihan Palet Warna */}
+                    <div className="space-y-2">
+                        <Label>Pilih Palet Warna</Label>
+                        <div className="grid grid-cols-2 gap-3">
+                            {palettes.map((palette) => (
+                                <div
+                                    key={palette.name}
+                                    onClick={() => handlePaletteSelect(palette)}
+                                    className={`p-2 rounded-lg cursor-pointer border-2 ${JSON.stringify(form.customColors) === JSON.stringify(palette.colors) ? 'border-primary' : 'border-transparent'}`}
+                                >
+                                    <div className="flex h-12 rounded-md overflow-hidden">
+                                        <div style={{ backgroundColor: palette.colors.primary }} className="w-1/2 h-full"></div>
+                                        <div className="w-1/2 h-full flex flex-col">
+                                            <div style={{ backgroundColor: palette.colors.secondary }} className="w-full h-1/2"></div>
+                                            <div style={{ backgroundColor: palette.colors.background }} className="w-full h-1/2"></div>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-center mt-1">{palette.name}</p>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Kolom Kanan: Pilihan Pasangan Font */}
+                    <div className="space-y-2">
+                        <Label className="flex items-center gap-2"><Type size={16} /> Pilih Pasangan Font</Label>
+                        <div className="grid grid-cols-2 gap-3">
+                            {fontPairings.map((pairing) => (
+                                <div
+                                    key={pairing.name}
+                                    onClick={() => handleFontPairingSelect(pairing)}
+                                    className={`p-4 rounded-lg cursor-pointer border-2 text-center ${form.fontTitle === pairing.fontTitle && form.fontText === pairing.fontText ? 'border-primary' : 'border-gray-200'}`}
+                                >
+                                    <div className={`text-xl ${pairing.fontTitle}`}>Judul</div>
+                                    <div className={`text-sm ${pairing.fontText}`}>Paragraf</div>
+                                    <p className="text-xs text-muted-foreground mt-2">{pairing.name}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </CardContent>
