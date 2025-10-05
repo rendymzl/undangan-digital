@@ -1,7 +1,10 @@
+// Export all types
+export * from './dashboard';
+export * from './guest';
+export * from './payment';
+export * from './analytics';
+
+// Re-export existing types
+export * from './theme';
 export * from './invitation';
-export * from './rsvp';
-export * from './amplop';
-export * from './photo';
 export * from './user';
-export * from './theme'; 
-export * from './galery'; 

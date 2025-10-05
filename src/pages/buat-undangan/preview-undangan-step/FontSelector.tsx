@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Type } from "lucide-react";
 import { fontPairings } from '@/types/fontPairings'; // <-- Import daftar pasangan font
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 
 type Props = {
     form: InvitationFormData;

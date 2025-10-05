@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { UploadCloud, X } from "lucide-react";
 import { Switch } from "@/components/ui/switch"; // Import Switch
 import { Label } from "@/components/ui/label";   // Import Label
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 import type { GaleriFoto } from '@/types';
 
 type Props = {

@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MempelaiFormCard } from "./MempelaiFormCard";
 import { Label } from "@/components/ui/label";
-import type { InvitationFormData } from "@/utils/caseTransform";
+import type { InvitationFormData } from "@/utils/data-transform";
 
 type Props = {
   form: InvitationFormData;

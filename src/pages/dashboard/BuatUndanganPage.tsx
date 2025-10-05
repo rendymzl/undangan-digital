@@ -1,6 +1,6 @@
 import { useInvitationForm } from "@/hooks/useInvitationForm";
 import DataMempelaiStep from "../buat-undangan/data-mempelai-step/DataMempelaiStep";
-import { formatOrangTua } from "@/utils/formatOrangTua";
+import { formatOrangTua } from "@/utils/text-formatting";
 import DetailAcaraStep from "../buat-undangan/detail-acara-step/DetailAcaraStep";
 import CeritaCintaStep from "../buat-undangan/CeritaCintaStep";
 import { CoverBackgroundSelector } from "../buat-undangan/CoverBackgroundSelector";
@@ -11,7 +11,7 @@ import { Fragment } from "react";
 import { Card } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { dummyInvitationData } from "@/utils/dummyData";
+import { dummyInvitationData } from "@/utils/test-data";
 import { toast } from "sonner";
 import { Wand2 } from "lucide-react";
 

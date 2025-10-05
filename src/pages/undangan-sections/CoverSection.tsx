@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import type { CoverTipe, UrutanMempelai } from '@/types';
-import { toTitleCase } from '@/utils/toTitleCase';
+import { toTitleCase } from '@/utils/text-formatting';
 
 // Helper components for ornaments remain the same
 const AnimatedTopOrnament: React.FC<{ isLocked: boolean; className: string; children: React.ReactNode; }> = ({ isLocked, className, children }) => (

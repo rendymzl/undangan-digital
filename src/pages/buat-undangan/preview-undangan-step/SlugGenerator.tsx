@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
 import { Link2, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 import { supabase } from '@/lib/supabaseClient';
-import { invitationToApi, type InvitationFormData } from '@/utils/caseTransform';
+import { invitationToApi, type InvitationFormData } from '@/utils/data-transform';
 import { themes } from '@/types';
 import { Button } from '@/components/ui/button';
 

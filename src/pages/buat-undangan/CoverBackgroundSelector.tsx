@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch"; // Import Switch
 import { Button } from "@/components/ui/button";
 import { Camera, Image as ImageIcon, X } from "lucide-react";
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 import type { CoverTipe } from '@/types';
 
 const predefinedCovers = [

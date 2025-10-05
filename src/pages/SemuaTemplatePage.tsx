@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { themes, type Theme } from '@/types/theme';
 import { ExternalLink } from 'lucide-react';
 import type { Invitation } from '@/types';
-import { invitationToApi, invitationFromApi } from '@/utils/caseTransform';
-import { dummyInvitationData } from '@/utils/dummyData';
+import { invitationToApi, invitationFromApi } from '@/utils/data-transform';
+import { dummyInvitationData } from '@/utils/test-data';
 import { TemplateCardPreview } from './dashboard/TemplateCardPreview';
 import { TemplateGrid } from '@/components/shared/TemplateGrid';
 

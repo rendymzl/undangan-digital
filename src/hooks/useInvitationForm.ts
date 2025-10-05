@@ -3,11 +3,11 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { getInvitationById } from '@/features/invitations/invitationService';
 import { toast } from 'sonner';
-import { invitationToForm, type InvitationFormData } from '@/utils/caseTransform';
+import { invitationToForm, type InvitationFormData } from '@/utils/data-transform';
 import { themes } from '@/types/theme';
 import type { AmplopDigital } from '@/types';
-import { handleInvitationSubmit } from '@/utils/submissionHandler';
-import { getValidationMessage, isStepValid } from '@/utils/formValidator';
+import { handleInvitationSubmit } from '@/utils/form';
+import { getValidationMessage, isStepValid } from '@/utils/data-transform';
 import { fontPairings } from '@/types/fontPairings';
 
 

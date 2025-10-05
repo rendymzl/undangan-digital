@@ -32,7 +32,7 @@
 /* ------------------------------------ */
 
 @import "tailwindcss";
-@import "tw-animate-css";
+/* @import "tw-animate-css"; */
 
 /* Animasi fade-out dan slide-up untuk buka undangan */
 @keyframes fade-slide-leave {

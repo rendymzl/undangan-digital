@@ -5,7 +5,7 @@ import type { Invitation } from '@/types';
 import { toast } from 'sonner';
 import { UrlInputForm } from '@/components/generate-pesan/UrlInputForm';
 import { PesanGenerator } from '../../components/generate-pesan/PesanGenerator';
-import { invitationFromApi } from '@/utils/caseTransform';
+import { invitationFromApi } from '@/utils/data-transform';
 
 export default function UndangTamuPage() {
     const { invitationId } = useParams<{ invitationId: string }>();

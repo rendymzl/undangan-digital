@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Palette, Type } from "lucide-react";
 import { palettes } from '@/types/palettes';
 import { fontPairings, type FontPairing } from '@/types/fontPairings';
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 import { themes, type NamedPalette } from '@/types';
 
 type Props = {

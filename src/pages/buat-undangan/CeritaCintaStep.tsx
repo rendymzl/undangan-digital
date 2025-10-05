@@ -2,7 +2,7 @@ import { Textarea } from "../../components/ui/textarea";
 import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import type { InvitationFormData } from "@/utils/caseTransform";
+import type { InvitationFormData } from "@/utils/data-transform";
 
 type Props = {
   form: InvitationFormData;

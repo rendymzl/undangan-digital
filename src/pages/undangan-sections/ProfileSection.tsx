@@ -4,8 +4,7 @@ import type { MempelaiData } from '@/types';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { Instagram } from 'lucide-react';
-import { formatOrangTua } from '@/utils/formatOrangTua';
-import { toTitleCase } from '@/utils/toTitleCase';
+import { formatOrangTua, toTitleCase } from '@/utils/text-formatting';
 
 // --- Props Utama (Tidak berubah) ---
 interface ProfileSectionProps {

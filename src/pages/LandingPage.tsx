@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, Heart, Send, SquarePen } from "lucide-react";
+import { CheckCircle, Heart, Send, Pen } from "lucide-react";
 import { themes } from '@/types/theme';
 import { TemplateGrid } from '@/components/shared/TemplateGrid';
 import heroImage from '../assets/hero-undangan.png';
@@ -93,7 +93,7 @@ export default function LandingPage() {
                     <span className="inline xs:hidden">Elegan</span>
                   </div>
                   <div className="flex items-center justify-end gap-1 md:gap-2 text-base md:text-lg">
-                    <span className="text-primary"><SquarePen className="w-4 h-4 md:w-5 md:h-5" /></span>
+                    <span className="text-primary"><Pen className="w-4 h-4 md:w-5 md:h-5" /></span>
                     <span className="hidden xs:inline">Mudah dibuat</span>
                     <span className="inline xs:hidden">Mudah</span>
                   </div>

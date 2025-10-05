@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Music, UploadCloud } from "lucide-react";
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 
 const BACKSOUND_BUCKET_URL = "https://eylhalmtaelrpjnncoho.supabase.co/storage/v1/object/public/backsound";
 

@@ -1,16 +1,28 @@
-export interface PaymentProof {
-    id: string;
-    invitation_id: string;
-    user_id: string;
-    proof_image_url: string;
-    status: 'pending' | 'approved' | 'rejected';
-    created_at: string;
-    invitations: {
-        slug: string;
-        nama_pria: string;
-        nama_wanita: string;
-    } | null;
+// Payment-related types
+export interface PaymentPlan {
+  id: string;
+  name: string;
+  price: number;
+  duration: number; // in days
+  features: string[];
+  isPopular?: boolean;
+}
 
-    // --- ADD THIS LINE ---
-    signed_proof_url?: string | null; // This property is added by the service
+export interface UserSubscription {
+  planId: string;
+  startDate: Date;
+  endDate: Date;
+  status: 'active' | 'expired' | 'cancelled';
+  autoRenew: boolean;
+}
+
+export interface Transaction {
+  id: string;
+  amount: number;
+  currency: string;
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  paymentMethod: string;
+  description: string;
+  createdAt: Date;
+  completedAt?: Date;
 }

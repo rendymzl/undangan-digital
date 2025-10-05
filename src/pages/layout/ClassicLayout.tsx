@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Invitation, RSVP } from '@/types';
 import type { Theme } from '@/types/theme';
-import { formatOrangTua } from '@/utils/formatOrangTua'; // Pastikan path ini benar
+import { formatOrangTua } from '@/utils/text-formatting';
 import SalamSection from '../undangan-sections/SalamSection';
 import ProfileSection from '../undangan-sections/ProfileSection';
 import AcaraSection from '../undangan-sections/AcaraSection';

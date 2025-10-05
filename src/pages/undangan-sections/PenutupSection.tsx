@@ -1,8 +1,8 @@
 import React from "react";
-import type { Theme } from "../../types/theme";
+import type { Theme } from "@/types/theme";
 import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { toTitleCase } from "@/utils/toTitleCase";
+import { toTitleCase } from "@/utils/text-formatting";
 import type { UrutanMempelai } from "@/types";
 
 // --- Props Utama ---

@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Music, Instagram, Gift, Camera, BookOpen, Calendar, MapPin, Heart } from "lucide-react";
 import type { Theme } from "@/types/theme";
-import { toTitleCase } from '@/utils/toTitleCase';
-import type { InvitationFormData } from '@/utils/caseTransform';
+import { toTitleCase } from '@/utils/text-formatting';
+import type { InvitationFormData } from '@/utils/data-transform';
 
 // Define the Props
 type Props = {

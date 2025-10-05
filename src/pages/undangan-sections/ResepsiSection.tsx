@@ -1,7 +1,7 @@
 import React from "react";
 import type { Theme } from "@/types/theme";
-import TopSVG from "../../components/ornament/floraCenter2";
-import RightSVG2 from "../../components/ornament/floraRight2";
+import TopSVG from "@/components/ornament/floraCenter2";
+import RightSVG2 from "@/components/ornament/floraRight2";
 import { motion } from 'framer-motion';
 import { useEffect, useState } from "react";
 

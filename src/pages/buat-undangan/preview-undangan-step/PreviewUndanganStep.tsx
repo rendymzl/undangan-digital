@@ -7,7 +7,7 @@ import { BacksoundSelector } from './BacksoundSelector';
 import { InvitationPreviewCard } from './InvitationPreviewCard';
 import { themes } from '@/types/theme';
 import { ThemeSelector } from './ThemeSelector';
-import type { InvitationFormData } from '@/utils/caseTransform';
+import type { InvitationFormData } from '@/utils/data-transform';
 
 type Props = {
   form: InvitationFormData;

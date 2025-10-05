@@ -1,5 +1,5 @@
 import React from "react";
-import type { Theme } from "../../types/theme";
+import type { Theme } from "@/types/theme";
 import { motion } from 'framer-motion';
 import type { AmplopDigital } from "@/types";
 import { toast } from "sonner";

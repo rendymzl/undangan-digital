@@ -1,19 +1,39 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../features/auth/useAuth";
-import { Button } from "../../components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../../components/ui/card";
-import { themes } from "../../types/theme";
+import { useAuth } from "@/features/auth/useAuth";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { themes } from "@/types/theme";
 import type { Invitation, RSVP } from '@/types';
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { invitationFromApi } from "@/utils/caseTransform";
+import { invitationFromApi } from "@/utils/data-transform";
 import { deleteInvitation, getInvitationsByUser } from "@/features/invitations/invitationService";
-import { Pencil, Trash2, ExternalLink, Send, Plus } from "lucide-react";
+import { 
+  Pencil, 
+  Trash2, 
+  ExternalLink, 
+  Send, 
+  Plus,
+  Calendar,
+  Users,
+  MessageSquare,
+  CheckCircle,
+  Clock
+} from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
 import { Badge } from "@/components/ui/badge";
 import { PaymentModal } from "./PaymentModal";
 import { RSVPListModal } from "./RSVPListModal";
 import type { PaymentProof } from "@/types/payment";
+
+// Import new dashboard components
+import { 
+  StatCard, 
+  QuickActionButton, 
+  RecentInvitations, 
+  ActivityFeed 
+} from "./components";
+import { useDashboardStats, useDashboardData } from "./hooks";
 
 // Fungsi format tanggal (tidak perlu diubah)
 function formatTanggalIndo(tanggal: string | null | undefined): string {
@@ -30,8 +50,10 @@ function formatTanggalIndo(tanggal: string | null | undefined): string {
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [loadingList, setLoadingList] = useState(true);
+  
+  // Use new dashboard hooks
+  const { invitations, quickActions, activities, loading: dataLoading, error, refreshData } = useDashboardData();
+  const { stats, trends } = useDashboardStats({ invitations });
 
   // State untuk modals
   const [viewingProof, setViewingProof] = useState<PaymentProof | null>(null);
@@ -58,43 +80,13 @@ export default function DashboardPage() {
     }
   };
 
-  const refreshData = () => {
-    if (user) {
-      getInvitationsByUser(user.id).then(({ data }) => {
-        setInvitations((data || []).map(invitationFromApi));
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      setLoadingList(true);
-      getInvitationsByUser(user.id)
-        .then(({ data, error }) => {
-          if (error) {
-            toast.error("Gagal memuat daftar undangan.");
-            console.error(error);
-            return;
-          }
-          const transformedData: Invitation[] = (data || []).map(invitationFromApi);
-          const sortedData = transformedData.sort((a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-          setInvitations(sortedData);
-        })
-        .finally(() => {
-          setLoadingList(false);
-        });
-    }
-  }, [user]);
-
   const handleDelete = async (id: string) => {
     if (window.confirm("Yakin ingin menghapus undangan ini? Semua data terkait akan hilang.")) {
       const { error } = await deleteInvitation(id);
       if (error) {
         toast.error("Gagal menghapus undangan.");
       } else {
-        setInvitations((prev) => prev.filter((inv) => inv.id !== id));
+        await refreshData(); // Use the new refresh function
         toast.success("Undangan berhasil dihapus.");
       }
     }
@@ -107,7 +99,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-8 px-4 pb-28 md:pb-8">
+    <div className="w-full max-w-7xl mx-auto py-8 px-4 pb-28 md:pb-8">
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4 w-full">
         <div>
           <h1 className="text-3xl font-bold mb-1">Dashboard Undangan</h1>
@@ -119,9 +112,82 @@ export default function DashboardPage() {
           <Link to="/dashboard/pilih-template">+ Buat Undangan Baru</Link>
         </Button>
       </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          title="Total Undangan"
+          value={stats.totalInvitations}
+          description="Undangan yang telah dibuat"
+          icon={Calendar}
+          trend={trends.invitations}
+          color="blue"
+        />
+        <StatCard
+          title="Undangan Aktif"
+          value={stats.activeInvitations}
+          description="Undangan yang masih berlaku"
+          icon={CheckCircle}
+          color="green"
+        />
+        <StatCard
+          title="Total Tamu"
+          value={stats.totalGuests}
+          description="Jumlah tamu yang diundang"
+          icon={Users}
+          color="purple"
+        />
+        <StatCard
+          title="RSVP Konfirmasi"
+          value={stats.confirmedRSVPs}
+          description="Tamu yang sudah konfirmasi"
+          icon={MessageSquare}
+          trend={trends.rsvps}
+          color="orange"
+        />
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Aksi Cepat</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickActions.map((action, index) => (
+            <QuickActionButton
+              key={index}
+              title={action.title}
+              description={action.description}
+              icon={action.icon}
+              href={action.href}
+              color={action.color}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Recent Invitations */}
+        <div className="lg:col-span-2">
+          <RecentInvitations 
+            invitations={invitations}
+            maxItems={4}
+            showViewAll={true}
+          />
+        </div>
+
+        {/* Activity Feed */}
+        <div className="lg:col-span-1">
+          <ActivityFeed 
+            activities={activities}
+            maxItems={6}
+            showViewAll={true}
+          />
+        </div>
+      </div>
+      {/* Detailed Invitation List */}
       <div id="undangan-saya" className="mt-2">
-        <h2 className="font-semibold mb-4 text-lg">Daftar Undangan Anda</h2>
-        {loadingList ? (
+        <h2 className="font-semibold mb-4 text-lg">Semua Undangan Anda</h2>
+        {dataLoading ? (
           <div className="text-gray-500">Memuat data undangan...</div>
         ) : invitations.length === 0 ? (
           <div className="text-gray-400 text-center py-12 border-2 border-dashed rounded-lg">

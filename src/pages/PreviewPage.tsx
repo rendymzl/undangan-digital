@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import UndanganDetailPage from './UndanganDetailPage';
-import { invitationToApi, invitationFromApi, type InvitationFormData } from '@/utils/caseTransform';
+import { invitationToApi, invitationFromApi, type InvitationFormData } from '@/utils/data-transform';
 import type { Invitation } from '@/types';
 
 export default function PreviewPage() {

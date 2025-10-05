@@ -1,4 +1,4 @@
-import { Home, Plus, Book, User, LogOut, Gift } from "lucide-react"
+import { Home, Plus, User, LogOut, Gift } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -8,11 +8,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
   SidebarFooter,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { useEffect } from "react"
 import { logout } from "@/features/auth/authService"
 import logo from "@/assets/logo-menantikan.png"
@@ -33,18 +32,16 @@ const menuUtama = [
   // Hapus menu 'Undangan Saya'
 ]
 
-// const menuLainnya = [
-//   {
-//     title: "Profil",
-//     url: "#profil",
-//     icon: User,
-//     match: (pathname: string) => pathname === "#profil",
-//   },
-// ]
+const menuLainnya = [
+  {
+    title: "Profil",
+    url: "/dashboard/profil",
+    icon: User,
+    match: (pathname: string) => pathname === "/dashboard/profil",
+  },
+]
 
 export function AppSidebar() {
-  const navigate = useNavigate()
-
   // Fungsi logout dummy, ganti dengan implementasi asli jika perlu
   const handleLogout = () => {
     // Tambahkan konfirmasi sebelum logout
@@ -119,7 +116,7 @@ export function AppSidebar() {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-            {/* <SidebarGroup>
+            <SidebarGroup>
               <SidebarGroupLabel className="text-xs text-gray-500 uppercase tracking-wider mb-1">Lainnya</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -145,7 +142,7 @@ export function AppSidebar() {
                   ))}
                 </SidebarMenu>
               </SidebarGroupContent>
-            </SidebarGroup> */}
+            </SidebarGroup>
           </div>
         </SidebarContent>
         <SidebarFooter className="border-t px-4 py-3 bg-gray-50">

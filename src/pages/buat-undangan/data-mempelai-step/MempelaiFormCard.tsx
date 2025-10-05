@@ -1,13 +1,13 @@
-import { Card } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
-import { Button } from "../../../components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { X, Camera } from "lucide-react";
 import { useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { MempelaiFormData } from "@/utils/caseTransform";
+import type { MempelaiFormData } from "@/utils/data-transform";
 
 // Define the type for props
 type MempelaiFormProps = {

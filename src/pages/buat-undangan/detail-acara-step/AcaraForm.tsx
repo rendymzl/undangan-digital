@@ -56,7 +56,7 @@ export const AcaraForm: React.FC<AcaraFormProps> = ({
                             <Calendar
                                 mode="single"
                                 selected={acaraData.tanggal ? new Date(acaraData.tanggal) : undefined}
-                                onSelect={date => updateForm(`${path}.tanggal`, date ? format(date, "yyyy-MM-dd") : null)}
+                                onSelect={(date: string | number | Date) => updateForm(`${path}.tanggal`, date ? format(date, "yyyy-MM-dd") : null)}
                                 initialFocus
                             />
                         </PopoverContent>

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { Card } from "../../../components/ui/card";
-import { Label } from "../../../components/ui/label";
-import { Switch } from "../../../components/ui/switch";
-import { Checkbox } from "../../../components/ui/checkbox";
+import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AcaraForm } from "./AcaraForm";
-import type { InvitationFormData } from "@/utils/caseTransform";
+import type { InvitationFormData } from "@/utils/data-transform";
 
 type Props = {
   form: InvitationFormData;

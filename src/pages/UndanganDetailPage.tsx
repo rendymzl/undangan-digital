@@ -1,5 +1,4 @@
-import React from 'react';
-import type { Invitation, RSVP } from '@/types';
+import type { Invitation } from '@/types';
 import { useUndanganData } from '@/hooks/useUndanganData';
 
 // Import komponen-komponen section

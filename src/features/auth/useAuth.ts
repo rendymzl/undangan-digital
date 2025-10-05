@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
-import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
+// Mock types for demo purposes
+type AuthChangeEvent = string;
+type Session = { user: User } | null;
+type User = {
+  id: string;
+  email?: string;
+  [key: string]: any;
+};
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
